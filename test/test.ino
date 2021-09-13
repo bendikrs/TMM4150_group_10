@@ -6,7 +6,7 @@
 // Tested on 17 September 2019
 // ---------------------------------------------------------------- //
 
-#include <servo.h>
+#include <Servo.h>
 
 #define echoPin 2 // attach pin D2 Arduino to pin Echo of HC-SR04
 #define trigPin 3 //attach pin D3 Arduino to pin Trig of HC-SR04
