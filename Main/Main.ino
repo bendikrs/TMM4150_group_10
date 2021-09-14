@@ -17,6 +17,11 @@
 #define MS1 10
 #define MS2 11
 #define MS3 12
+
+#define INFRA1 A1
+#define INFRA2 A2
+#define INFRA3 A3
+
 A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L); //, MS1, MS2, MS3);
 // A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R); //, MS1, MS2, MS3);
 
