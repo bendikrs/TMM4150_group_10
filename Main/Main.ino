@@ -9,19 +9,26 @@
 // using a 200-step motor (most common)
 #define MOTOR_STEPS 200
 // configure the pins connected
-#define DIR 8
-#define STEP 9
+#define DIR_L 2
+#define STEP_L 3
+#define DIR_R 8
+#define STEP_R 9
+
 #define MS1 10
 #define MS2 11
 #define MS3 12
-A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
+A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L); //, MS1, MS2, MS3);
+// A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R); //, MS1, MS2, MS3);
 
 void setup() {
     // Set target motor RPM to 1RPM and microstepping to 1 (full step mode)
-    stepper.begin(1, 1);
+    stepper_left.begin(60, 1);
+    // stepper_right.begin(30, 1);
+
 }
 
 void loop() {
     // Tell motor to rotate 360 degrees. That's it.
-    stepper.rotate(360);
+    stepper_left.rotate(360);
+    // stepper_right.rotate(360);
 }
