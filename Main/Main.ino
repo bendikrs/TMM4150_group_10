@@ -1,4 +1,4 @@
-#include <Servo.h>
+// #include <Servo.h>
 #include "BasicStepperDriver.h"
 #include "MultiDriver.h"
 #include "SyncDriver.h"
@@ -29,7 +29,6 @@ void setup() {
     // Set target motor RPM to 1RPM and microstepping to 1 (full step mode)
     stepper_left.begin(60, 1);
     // stepper_right.begin(30, 1);
-
 }
 
 void loop() {

@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "InfraredArray.h"
 
 InfraredArray::InfraredArray(int infra1, int infra2, int infra3)
@@ -11,6 +12,9 @@ InfraredArray::InfraredArray(int infra1, int infra2, int infra3)
 readings InfraredArray::getReadings(){
 
     readings returnReadings;
+    returnReadings.r1 = 1;
+    returnReadings.r2 = 1;
+    returnReadings.r3 = 1;
 
-    return readings;
+    return returnReadings;
 }
