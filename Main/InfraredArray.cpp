@@ -14,6 +14,10 @@ InfraredArray::InfraredArray(int infra1, int infra2, int infra3, int infra4, int
 }
 
 readings InfraredArray::getReadings(){
+    /*Updates and returns a readings struct
+    The numbers are in percent, where 100% is a reading larger or equal to this->upperLim
+    and 0% is a reading lower or equal to this->lowerLim
+    */
 
     readings returnReadings;
     returnReadings.r1 = analogRead(this->infra1);
@@ -22,5 +26,26 @@ readings InfraredArray::getReadings(){
     returnReadings.r4 = analogRead(this->infra4);
     returnReadings.r5 = analogRead(this->infra5);
 
+    returnReadings.r1 = map(returnReadings.r1, this->lowerLim, this->upperLim, 0, 100);
+    returnReadings.r2 = map(returnReadings.r2, this->lowerLim, this->upperLim, 0, 100);
+    returnReadings.r3 = map(returnReadings.r3, this->lowerLim, this->upperLim, 0, 100);
+    returnReadings.r4 = map(returnReadings.r4, this->lowerLim, this->upperLim, 0, 100);
+    returnReadings.r5 = map(returnReadings.r5, this->lowerLim, this->upperLim, 0, 100);
+    
     return returnReadings;
+}
+
+int InfraredArray::getAverage(){
+    /*Updates readings and return average reading over all sensors, in percent
+    */
+    readings ir = getReadings();
+    return (ir.r1+ir.r2+ir.r3+ir.r4+ir.r5)/5;
+}
+
+void InfraredArray::setLowerLim(int lowerLim){
+    this->lowerLim = lowerLim;
+}
+
+void InfraredArray::setUpperLim(int upperLim){
+    this->upperLim = upperLim;
 }
