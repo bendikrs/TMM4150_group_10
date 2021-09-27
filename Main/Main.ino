@@ -4,6 +4,7 @@
 #include "InfraredArray.h"
 #include "Robot.h"
 #include "Gripper.h"
+#include "stepper_robot/StepperRobot.h"
 
 #include <Arduino.h>
 #include "A4988.h"
@@ -35,6 +36,7 @@ SyncDriver controller(stepper_left, stepper_right);
 InfraredArray irArray(IR1, IR2, IR3, IR4, IR5);
 
 Robot robot(stepper_left, stepper_right, irArray, controller);
+// StepperRobot roboto();
 
 void setup() {
     Serial.begin(115200);
@@ -72,3 +74,5 @@ void loop() {
     Serial.print(rd.r5);
     
 }
+
+
