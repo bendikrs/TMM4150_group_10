@@ -3,11 +3,20 @@
 #include "Robot.h"
 
 
-Robot::Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray):
-stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray)
+Robot::Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, SyncDriver controller):
+stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray), controller(controller)
 {
-    stepper_right.begin(speed2rpm(this->speed), 1);
-    stepper_left.begin(speed2rpm(this->speed), 1);
+    
+    // stepper_right.begin(speed2rpm(this->speed), 1);
+    // stepper_left.begin(speed2rpm(this->speed), 1);
+
+    // stepper_right.enable(); // energize coils
+    // stepper_left.enable();
+
+    // stepper_left.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 500, 500);
+    // stepper_right.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 500, 500);
+
+    //stepper_left.nextAction
 }
 
 int Robot::checkIfWorking(){
@@ -20,10 +29,88 @@ int Robot::checkIfWorking(){
     }
 }
 
-int Robot::speed2rpm(int speed){
-    return speed/(3.141592*this->diameterDriveWheels);
+float Robot::speed2rpm(int speed){
+    /* speed [mm/s]
+    output: RPM
+    */
+    return (this->speed*60)/(3.141592*this->diameterDriveWheels);
 }
 
 void Robot::setSpeed(int speed){
     this->speed = speed;
+    this->controller.getMotor(0).setRPM(speed2rpm(this->speed));
+    this->controller.getMotor(1).setRPM(speed2rpm(this->speed));
+}
+
+/*
+void LineFollow::runLineFollow(){
+  for(int count=0; count<5; count++)
+  {
+    lectura_sensor[count]=map(_IRread(count),sensor_negro[count],sensor_blanco[count],0,127);
+    acu+=lectura_sensor[count];
+  }
+
+  //Serial.println(millis());
+  if (acu > NIVEL_PARA_LINEA)
+  {
+    acu/=5;
+
+    int error = ((lectura_sensor[0]<<6)+(lectura_sensor[1]<<5)-(lectura_sensor[3]<<5)-(lectura_sensor[4]<<6))/acu;
+
+    error = constrain(error,-100,100);
+
+    //Calculamos la correcion de velocidad mediante un filtro PD
+    int vel = (error * KP)/10 + (error-last_error)*KD;
+
+    last_error = error;
+
+    //Corregimos la velocidad de avance con el error de salida del filtro PD
+    int motor_left = constrain((robotSpeed + vel),-100,100);
+    int motor_right =constrain((robotSpeed - vel),-100,100);
+
+    //Movemos el robot
+    //motorsWritePct(motor_left,motor_right);
+    motorsWritePct(motor_left,motor_right);
+
+    //Esperamos un poquito a que el robot reaccione
+    delay(intergrationTime);
+  }
+  else
+  {
+    //Hemos encontrado una linea negra
+    //perpendicular a nuestro camino
+    //paramos el robot
+    motorsStop();
+
+    //y detenemos la ejecuci�n del programa
+    //while(true);
+	reportActionDone();
+	//setMode(MODE_SIMPLE);
+  }
+}  
+*/
+
+bool Robot::followLine(){
+    readings ir;
+    ir = this->irArray.getReadings();
+}
+
+
+bool Robot::autoDrive(){
+    // followLine();
+    this->controller.rotate(2*1080, 2*1080);
+    // this->controller.
+}
+
+void Robot::moveRobot(int steps1, int steps2){
+    this->controller.move(steps1, steps2);
+}
+
+void Robot::beginRobot(){
+    this->controller.getMotor(0).begin(speed2rpm(this->speed), 1);
+    this->controller.getMotor(1).begin(speed2rpm(this->speed), 1);
+
+    
+    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 200, 200);
+    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 200, 200);
 }

@@ -31,17 +31,20 @@
 
 A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
-
+SyncDriver controller(stepper_left, stepper_right);
 InfraredArray irArray(IR1, IR2, IR3, IR4, IR5);
 
-Robot robot(stepper_left, stepper_right, irArray);
+Robot robot(stepper_left, stepper_right, irArray, controller);
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     // Set target motor RPM to 1RPM and microstepping to 1 (full step mode)
-    // stepper_left.begin(60, 1);
-    
-    // stepper_right.begin(30, 1);
+    // stepper_left.begin(120, 1);
+    // stepper_right.begin(120, 1);
+    // controller.getMotor(0).begin(60,1);
+    // controller.getMotor(1).begin(60,1);
+    // controller.enable();
+    robot.beginRobot();
 }
 
 void loop() {
@@ -49,7 +52,23 @@ void loop() {
     // stepper_right.rotate(360);
     // delay(20);
     // Serial.println(irArray.getReadings().r1);
+    //robot.moveRobot(200, 100);
 
+    // Serial.println("drit");
 
+    // robot.autoDrive();
+    // robot.setSpeed(100);
+
+    readings rd = robot.irArray.getReadings();
+    Serial.println();
+    Serial.print(rd.r1);
+    Serial.print(" ");
+    Serial.print(rd.r2);
+    Serial.print(" ");
+    Serial.print(rd.r3);
+    Serial.print(" ");
+    Serial.print(rd.r4);
+    Serial.print(" ");
+    Serial.print(rd.r5);
     
 }

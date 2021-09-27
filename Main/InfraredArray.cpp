@@ -20,17 +20,23 @@ readings InfraredArray::getReadings(){
     */
 
     readings returnReadings;
-    returnReadings.r1 = analogRead(this->infra1);
-    returnReadings.r2 = analogRead(this->infra2);
-    returnReadings.r3 = analogRead(this->infra3);
-    returnReadings.r4 = analogRead(this->infra4);
-    returnReadings.r5 = analogRead(this->infra5);
+    // returnReadings.r1 = analogRead(this->infra1);
+    // returnReadings.r2 = analogRead(this->infra2);
+    // returnReadings.r3 = analogRead(this->infra3);
+    // returnReadings.r4 = analogRead(this->infra4);
+    // returnReadings.r5 = analogRead(this->infra5);
 
-    returnReadings.r1 = map(returnReadings.r1, this->lowerLim, this->upperLim, 0, 100);
-    returnReadings.r2 = map(returnReadings.r2, this->lowerLim, this->upperLim, 0, 100);
-    returnReadings.r3 = map(returnReadings.r3, this->lowerLim, this->upperLim, 0, 100);
-    returnReadings.r4 = map(returnReadings.r4, this->lowerLim, this->upperLim, 0, 100);
-    returnReadings.r5 = map(returnReadings.r5, this->lowerLim, this->upperLim, 0, 100);
+    returnReadings.r1 = digitalRead(this->infra1);
+    returnReadings.r2 = digitalRead(this->infra2);
+    returnReadings.r3 = digitalRead(this->infra3);
+    returnReadings.r4 = digitalRead(this->infra4);
+    returnReadings.r5 = digitalRead(this->infra5);
+
+    // returnReadings.r1 = map(returnReadings.r1, this->lowerLim, this->upperLim, 0, 100);
+    // returnReadings.r2 = map(returnReadings.r2, this->lowerLim, this->upperLim, 0, 100);
+    // returnReadings.r3 = map(returnReadings.r3, this->lowerLim, this->upperLim, 0, 100);
+    // returnReadings.r4 = map(returnReadings.r4, this->lowerLim, this->upperLim, 0, 100);
+    // returnReadings.r5 = map(returnReadings.r5, this->lowerLim, this->upperLim, 0, 100);
     
     return returnReadings;
 }

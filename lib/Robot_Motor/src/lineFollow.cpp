@@ -94,6 +94,7 @@ void LineFollow::calibIRs(){
 	isInited=true;
 }
 
+/*
 void LineFollow::runLineFollow(){
   for(int count=0; count<5; count++)
   {
@@ -133,12 +134,13 @@ void LineFollow::runLineFollow(){
     //paramos el robot
     motorsStop();
 
-    //y detenemos la ejecución del programa
+    //y detenemos la ejecuciï¿½n del programa
     //while(true);
 	reportActionDone();
 	//setMode(MODE_SIMPLE);
   }
-}  
+}
+*/
 
 
 void LineFollow::doCalibration(int speedPct, int time){
