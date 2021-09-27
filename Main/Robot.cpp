@@ -93,12 +93,24 @@ void LineFollow::runLineFollow(){
 bool Robot::followLine(){
     readings ir;
     ir = this->irArray.getReadings();
+
+    if (!ir.r2){
+        setLeftSpeed(this->speed-this->turnSpeedDiff);
+    }
+    else if (!ir.r4){
+        setRightSpeed(this->speed-this->turnSpeedDiff);
+    }
+    else 
+    {
+        setSpeed(speed2rpm(this->speed));
+    }
+    
 }
 
 
 bool Robot::autoDrive(){
-    // followLine();
-    this->controller.rotate(2*1080, 2*1080);
+    followLine();
+    this->controller.move(this->leftSpeed/10, this->rightSpeed/10);  //rotate(2*1080, -2*1080);
     // this->controller.
 }
 
@@ -113,4 +125,16 @@ void Robot::beginRobot(){
     
     this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 200, 200);
     this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 200, 200);
+}
+
+void Robot::setLeftSpeed(int _speed){
+    // speed: int [mm/s]
+    this->leftSpeed = _speed;
+    this->controller.getMotor(0).setRPM(speed2rpm(_speed));
+}
+
+void Robot::setRightSpeed(int _speed){
+    // speed: int [mm/s]
+    this->rightSpeed = _speed;
+    this->controller.getMotor(1).setRPM(speed2rpm(_speed));
 }
