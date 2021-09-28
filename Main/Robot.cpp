@@ -29,17 +29,17 @@ int Robot::checkIfWorking(){
     }
 }
 
-float Robot::speed2rpm(int speed){
+float Robot::speed2rpm(int _speed){
     /* speed [mm/s]
     output: RPM
     */
-    return (this->speed*60)/(3.141592*this->diameterDriveWheels);
+    return (_speed*60)/(3.141592*this->diameterDriveWheels);
 }
 
-void Robot::setSpeed(int speed){
-    this->speed = speed;
-    this->controller.getMotor(0).setRPM(speed2rpm(this->speed));
-    this->controller.getMotor(1).setRPM(speed2rpm(this->speed));
+void Robot::setSpeed(int _speed){
+    this->speed = _speed;
+    this->controller.getMotor(0).setRPM(speed2rpm(_speed));
+    this->controller.getMotor(1).setRPM(speed2rpm(_speed));
 }
 
 /*
@@ -94,28 +94,33 @@ bool Robot::followLine(){
     readings ir;
     ir = this->irArray.getReadings();
 
-    if (!ir.r2){
-        setLeftSpeed(this->speed-this->turnSpeedDiff);
+    if (!ir.r1 && !ir.r2){ // viss svart
+        setLeftSpeed(this->speed - this->turnSpeedDiff);
+        setRightSpeed(this->speed);
     }
-    else if (!ir.r4){
+    else if (!ir.r4 && !ir.r5){ //viss svart 
+        setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
     else 
     {
-        setSpeed(speed2rpm(this->speed));
+        setSpeed(this->speed);
     }
     
 }
 
 
 bool Robot::autoDrive(){
-    followLine();
-    this->controller.move(this->leftSpeed/10, this->rightSpeed/10);  //rotate(2*1080, -2*1080);
+    followLine(); // oppdaterer leftSpeed og rightSpeed
+    // this->controller.startMove(this->leftSpeed/40, -this->rightSpeed/40);
+    // this->controller.nextAction();
+    // ca. 1cm per iterasjon, ved speed=400 mm/s
+    this->controller.move(this->leftSpeed/5, -this->rightSpeed/5);  //rotate(2*1080, -2*1080);
     // this->controller.
 }
 
 void Robot::moveRobot(int steps1, int steps2){
-    this->controller.move(steps1, steps2);
+    this->controller.move(steps1, -steps2);
 }
 
 void Robot::beginRobot(){
@@ -123,8 +128,8 @@ void Robot::beginRobot(){
     this->controller.getMotor(1).begin(speed2rpm(this->speed), 1);
 
     
-    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 200, 200);
-    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 200, 200);
+    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
+    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
 }
 
 void Robot::setLeftSpeed(int _speed){

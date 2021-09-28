@@ -58,6 +58,7 @@ void loop() {
 
     // Serial.println("drit");
 
+    // robot.moveRobot(1000,1000);
     // robot.autoDrive();
     // robot.setSpeed(100);
 
