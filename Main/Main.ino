@@ -64,6 +64,8 @@ void loop() {
 
     readings rd = robot.irArray.getReadings();
     Serial.println();
+    Serial.print(rd.r0);
+    Serial.print(" ");
     Serial.print(rd.r1);
     Serial.print(" ");
     Serial.print(rd.r2);
@@ -71,8 +73,6 @@ void loop() {
     Serial.print(rd.r3);
     Serial.print(" ");
     Serial.print(rd.r4);
-    Serial.print(" ");
-    Serial.print(rd.r5);
     
 }
 

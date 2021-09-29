@@ -94,11 +94,11 @@ bool Robot::followLine(){
     readings ir;
     ir = this->irArray.getReadings();
 
-    if (!ir.r1 && !ir.r2){ // viss svart
+    if (!ir.r0 && !ir.r1){ // viss svart
         setLeftSpeed(this->speed - this->turnSpeedDiff);
         setRightSpeed(this->speed);
     }
-    else if (!ir.r4 && !ir.r5){ //viss svart 
+    else if (!ir.r3 && !ir.r4){ //viss svart 
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
@@ -130,6 +130,8 @@ void Robot::beginRobot(){
     
     this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
     this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
+
+    this->irArray.calibrateIRs();
 }
 
 void Robot::setLeftSpeed(int _speed){

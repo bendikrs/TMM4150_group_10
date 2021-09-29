@@ -27,7 +27,7 @@ public:
     bool followLine(); // Assumes a line is present, and executes one correction iteration to follow the line
     bool autoDrive(); // Drives until line is found, follows line when it's found. tries to grab cup, if found.
     void moveRobot(int steps1, int steps2);
-    void beginRobot();
+    void beginRobot(); // init motors and calibrate IRs
     void setRightSpeed(int _speed);
     void setLeftSpeed(int _speed);
 };
