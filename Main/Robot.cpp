@@ -124,8 +124,10 @@ void Robot::moveRobot(int steps1, int steps2){
 }
 
 void Robot::beginRobot(){
-    this->controller.getMotor(0).begin(speed2rpm(this->speed), 1);
-    this->controller.getMotor(1).begin(speed2rpm(this->speed), 1);
+    // Inits motors and calibrates IRs
+    pinMode(LED_BUILTIN, OUTPUT); //setups builtin led
+    this->controller.getMotor(0).begin(speed2rpm(this->speed), 1); //left motor
+    this->controller.getMotor(1).begin(speed2rpm(this->speed), 1); //right motor
 
     
     this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);

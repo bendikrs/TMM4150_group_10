@@ -14,23 +14,23 @@ InfraredArray::InfraredArray(int infra0, int infra1, int infra2, int infra3, int
 }
 
 readings InfraredArray::getReadings(){
-    /*Updates and returns a readings struct
+    /*Updates and returns a readings struct, with analog values
     The numbers are in percent, where 100% is a reading larger or equal to this->upperLim
     and 0% is a reading lower or equal to this->lowerLim
     */
 
     readings returnReadings;
-    // returnReadings.r0 = analogRead(this->infra0);
-    // returnReadings.r1 = analogRead(this->infra1);
-    // returnReadings.r2 = analogRead(this->infra2);
-    // returnReadings.r3 = analogRead(this->infra3);
-    // returnReadings.r4 = analogRead(this->infra4);
+    returnReadings.r0 = analogRead(this->infra0);
+    returnReadings.r1 = analogRead(this->infra1);
+    returnReadings.r2 = analogRead(this->infra2);
+    returnReadings.r3 = analogRead(this->infra3);
+    returnReadings.r4 = analogRead(this->infra4);
 
-    returnReadings.r0 = digitalRead(this->infra0);
-    returnReadings.r1 = digitalRead(this->infra1);
-    returnReadings.r2 = digitalRead(this->infra2);
-    returnReadings.r3 = digitalRead(this->infra3);
-    returnReadings.r4 = digitalRead(this->infra4);
+    // returnReadings.r0 = digitalRead(this->infra0);
+    // returnReadings.r1 = digitalRead(this->infra1);
+    // returnReadings.r2 = digitalRead(this->infra2);
+    // returnReadings.r3 = digitalRead(this->infra3);
+    // returnReadings.r4 = digitalRead(this->infra4);
 
 
     
@@ -54,16 +54,26 @@ void InfraredArray::setUpperLim(int upperLim, int sensorIndex){
 }
 
 void InfraredArray::calibrateIRs(){
-    readings manyReadings[100];
-    // for (int i=0; i<100; i++){
-    //     manyReadings[i] = this->getReadings();
-    //     if (){
+    /*Calibrates IR sensors lowerLim and upperLim
+    Builtin LED blinks rapidly while calibrating
+    */
+    readings reading_i;
+    for (int i=0; i<1000; i++){  
+        reading_i = this->getReadings();
+        updateUpperLowerLim(reading_i.r0, 0);
+        updateUpperLowerLim(reading_i.r1, 1);
+        updateUpperLowerLim(reading_i.r2, 2);
+        updateUpperLowerLim(reading_i.r3, 3);
+        updateUpperLowerLim(reading_i.r4, 4);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(10);
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(10);
 
-    //     }
-    // }
+    }
 }
 
-readings InfraredArray::getDigitalReading(){
+readings InfraredArray::getDigitalReadings(){
     readings returnReadings = getReadings();
 
     returnReadings.r0 = map(returnReadings.r0, this->lowerLim[0], this->upperLim[0], 0, 100);
@@ -73,4 +83,13 @@ readings InfraredArray::getDigitalReading(){
     returnReadings.r4 = map(returnReadings.r4, this->lowerLim[4], this->upperLim[4], 0, 100);
 
     return returnReadings;
+}
+
+void InfraredArray::updateUpperLowerLim(int sensorReading, int sensorIndex){
+    if (sensorReading < this->lowerLim[sensorIndex]){
+        setLowerLim(sensorReading, sensorIndex);
+    }
+    if (sensorReading > this->upperLim[sensorIndex]){
+        setUpperLim(sensorReading, sensorIndex);
+    }
 }

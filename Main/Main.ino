@@ -62,7 +62,7 @@ void loop() {
     // robot.autoDrive();
     // robot.setSpeed(100);
 
-    readings rd = robot.irArray.getReadings();
+    readings rd = robot.irArray.getDigitalReadings();
     Serial.println();
     Serial.print(rd.r0);
     Serial.print(" ");
