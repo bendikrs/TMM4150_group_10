@@ -1,6 +1,8 @@
 #include "A4988.h"
 #include "InfraredArray.h"
 #include "SyncDriver.h"
+#include "AccelStepper.h"
+#include "AccelStepperWithDistance.h"
 #pragma once
 
 class Robot

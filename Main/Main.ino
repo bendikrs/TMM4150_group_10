@@ -4,13 +4,17 @@
 #include "InfraredArray.h"
 #include "Robot.h"
 #include "Gripper.h"
-#include "stepper_robot/StepperRobot.h"
+#include <AccelStepperWithDistance.h>
+#include <AccelStepper.h>
+#include <MultiStepper.h>
+
 
 #include <Arduino.h>
 #include "A4988.h"
 
 
 // Setting the pins for left and right stepper motor, we don't use microstepping
+#define MOTORINTERFACE = 1
 #define DIR_L 2
 #define STEP_L 3
 #define DIR_R 4
@@ -29,6 +33,11 @@
 
 // using a 200-step motor
 #define MOTOR_STEPS 200
+
+// AccelStepperWithDistance stepper_left(AccelStepper::DRIVER, STEP_L, DIR_L);
+// AccelStepperWithDistance stepper_right(AccelStepper::DRIVER, STEP_R, DIR_R);
+
+// MultiStepper steppers(stepper_left, stepper_right);
 
 A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
