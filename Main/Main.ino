@@ -4,10 +4,6 @@
 #include "InfraredArray.h"
 #include "Robot.h"
 #include "Gripper.h"
-#include <AccelStepperWithDistance.h>
-#include <AccelStepper.h>
-#include <MultiStepper.h>
-
 
 #include <Arduino.h>
 #include "A4988.h"
