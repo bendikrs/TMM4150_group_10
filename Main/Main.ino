@@ -1,13 +1,9 @@
-#include "BasicStepperDriver.h"
-#include "MultiDriver.h"
+#include <Arduino.h>
+#include "A4988.h"
 #include "SyncDriver.h"
 #include "InfraredArray.h"
 #include "Robot.h"
 #include "Gripper.h"
-
-#include <Arduino.h>
-#include "A4988.h"
-
 
 // Setting the pins for left and right stepper motor, we don't use microstepping
 #define MOTORINTERFACE = 1
@@ -30,63 +26,30 @@
 // using a 200-step motor
 #define MOTOR_STEPS 200
 
-// AccelStepperWithDistance stepper_left(AccelStepper::DRIVER, STEP_L, DIR_L);
-// AccelStepperWithDistance stepper_right(AccelStepper::DRIVER, STEP_R, DIR_R);
-
-// MultiStepper steppers(stepper_left, stepper_right);
-
 A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
 SyncDriver controller(stepper_left, stepper_right);
 InfraredArray irArray(IR1, IR2, IR3, IR4, IR5);
-
 Robot robot(stepper_left, stepper_right, irArray, controller);
-// StepperRobot roboto();
 
 void setup() {
     Serial.begin(115200);
-    // Set target motor RPM to 1RPM and microstepping to 1 (full step mode)
-    // stepper_left.begin(120, 1);
-    // stepper_right.begin(120, 1);
-    // controller.getMotor(0).begin(60,1);
-    // controller.getMotor(1).begin(60,1);
-    // controller.enable();
     robot.beginRobot();
 }
 
 void loop() {
-    //stepper_left.rotate(360);
-    // stepper_right.rotate(360);
-    // delay(20);
-    // Serial.println(irArray.getReadings().r1);
-    //robot.moveRobot(200, 100);
-
-    // Serial.println("drit");
-
-    // robot.moveRobot(1000,1000);
-    // robot.setSpeed(100);
-
     robot.autoDrive();
 
-    // readings rd = robot.irArray.getDigitalReadings();
-    // readings rd = robot.irArray.getReadings();
-
     // Serial.println();
-    // Serial.print(rd.r0);
+    // Serial.print(robot.irArray.getReadings().r0);
     // Serial.print(" ");
-    // Serial.print(rd.r1);
+    // Serial.print(robot.irArray.getReadings().r1);
     // Serial.print(" ");
-    // Serial.print(rd.r2);
+    // Serial.print(robot.irArray.getReadings().r2);
     // Serial.print(" ");
-    // Serial.print(rd.r3);
+    // Serial.print(robot.irArray.getReadings().r3);
     // Serial.print(" ");
-    // Serial.print(rd.r4);
-
-    // Serial.print(rd.r2);
-    // Serial.print(" ");
-    // Serial.print(rd.r4);
-
-    
+    // Serial.print(robot.irArray.getReadings().r4);  
 }
 
 
