@@ -7,10 +7,10 @@ class Robot
 {
 private:
     int diameterDriveWheels = 65; // [mm]
-    int speed = 60; // [mm/s]
-    int leftSpeed = 60; // [mm/s] positiv verdi er framover
-    int rightSpeed = 60; // [mm/s] negativ verdi er framover
-    int turnSpeedDiff = 30; // [mm/s]
+    int speed = 180; // [mm/s]
+    int leftSpeed; // [mm/s] positiv verdi er framover
+    int rightSpeed; // [mm/s] negativ verdi er framover
+    int turnSpeedDiff = speed - 40; // [mm/s]
     int cycleTime = 50; // [millisecond]
 
 

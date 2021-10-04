@@ -20,17 +20,17 @@ readings InfraredArray::getReadings(){
     */
 
     readings returnReadings;
-    returnReadings.r0 = analogRead(this->infra0);
-    returnReadings.r1 = analogRead(this->infra1);
-    returnReadings.r2 = analogRead(this->infra2);
-    returnReadings.r3 = analogRead(this->infra3);
-    returnReadings.r4 = analogRead(this->infra4);
+    // returnReadings.r0 = analogRead(this->infra0);
+    // returnReadings.r1 = analogRead(this->infra1);
+    // returnReadings.r2 = analogRead(this->infra2);
+    // returnReadings.r3 = analogRead(this->infra3);
+    // returnReadings.r4 = analogRead(this->infra4);
 
-    // returnReadings.r0 = digitalRead(this->infra0);
-    // returnReadings.r1 = digitalRead(this->infra1);
-    // returnReadings.r2 = digitalRead(this->infra2);
-    // returnReadings.r3 = digitalRead(this->infra3);
-    // returnReadings.r4 = digitalRead(this->infra4);
+    returnReadings.r0 = digitalRead(this->infra0);
+    returnReadings.r1 = digitalRead(this->infra1);
+    returnReadings.r2 = digitalRead(this->infra2);
+    returnReadings.r3 = digitalRead(this->infra3);
+    returnReadings.r4 = digitalRead(this->infra4);
 
 
     

@@ -25,10 +25,10 @@ void Robot::beginRobot(){
     this->controller.getMotor(0).begin(speed2rpm(this->speed), 1); //left motor
     this->controller.getMotor(1).begin(speed2rpm(this->speed), 1); //right motor
 
-    // this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
-    // this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
+    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
+    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
 
-    this->irArray.calibrateIRs();
+    // this->irArray.calibrateIRs();
 }
 
 int Robot::checkIfWorking(){
@@ -45,16 +45,16 @@ bool Robot::followLine(){
     readings ir;
     ir = this->irArray.getReadings();
 
-    if (!ir.r1){ // viss svart
+    setLeftSpeed(this->speed);
+    setRightSpeed(this->speed);
+    
+    if (!ir.r2){ // viss svart
         setLeftSpeed(this->speed - this->turnSpeedDiff);
         setRightSpeed(this->speed);
     }
     else if (!ir.r4){ //viss svart 
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
-    }
-    else{
-        setSpeed(this->speed);
     }
     
 }
@@ -65,9 +65,9 @@ bool Robot::autoDrive(){
     // this->controller.startMove(this->leftSpeed/40, -this->rightSpeed/40);
     // this->controller.nextAction();
     // ca. 1cm per iterasjon, ved speed=400 mm/s
-    // this->controller.move(this->leftSpeed/5, -this->rightSpeed/5);  //rotate(2*1080, -2*1080);
+    this->controller.move(this->leftSpeed/5, -this->rightSpeed/5);  //rotate(2*1080, -2*1080);
     
-    this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5);
+    // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5);
 }
 
 void Robot::moveRobot(int steps1, int steps2){

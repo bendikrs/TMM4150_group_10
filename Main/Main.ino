@@ -17,11 +17,11 @@
 #define STEP_R 5
 
 // Setting the pins for the IR array
-#define IR1 A1
-#define IR2 A2
-#define IR3 A3
-#define IR4 A4
-#define IR5 A5
+#define IR1 A0
+#define IR2 A1
+#define IR3 A2
+#define IR4 A3
+#define IR5 A4
 
 // Setting the pins for the servos
 #define grabServo 10
@@ -64,20 +64,28 @@ void loop() {
     // Serial.println("drit");
 
     // robot.moveRobot(1000,1000);
-    // robot.autoDrive();
     // robot.setSpeed(100);
 
-    readings rd = robot.irArray.getDigitalReadings();
-    Serial.println();
-    Serial.print(rd.r0);
-    Serial.print(" ");
-    Serial.print(rd.r1);
-    Serial.print(" ");
-    Serial.print(rd.r2);
-    Serial.print(" ");
-    Serial.print(rd.r3);
-    Serial.print(" ");
-    Serial.print(rd.r4);
+    robot.autoDrive();
+
+    // readings rd = robot.irArray.getDigitalReadings();
+    // readings rd = robot.irArray.getReadings();
+
+    // Serial.println();
+    // Serial.print(rd.r0);
+    // Serial.print(" ");
+    // Serial.print(rd.r1);
+    // Serial.print(" ");
+    // Serial.print(rd.r2);
+    // Serial.print(" ");
+    // Serial.print(rd.r3);
+    // Serial.print(" ");
+    // Serial.print(rd.r4);
+
+    // Serial.print(rd.r2);
+    // Serial.print(" ");
+    // Serial.print(rd.r4);
+
     
 }
 
