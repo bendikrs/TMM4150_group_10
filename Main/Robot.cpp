@@ -22,11 +22,18 @@ int Robot::checkIfWorking(){
     }
 }
 
-bool Robot::followLine(){
+void Robot::followLine(){
+    /* returns
+    0: No line found
+    1: Detected left turn
+    2: Detected right turn
+    3: Detected intersection, need to choose to turn left or right
+    4: Follows line
+    */
     readings ir;
     ir = this->irArray.getReadings();
 
-    if(!ir.r2 && !ir.r4){
+    if(!ir.r2 && !ir.r4){ 
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed);
     }
@@ -41,15 +48,29 @@ bool Robot::followLine(){
 }
 
 bool Robot::autoDrive(){
-    followLine(); // oppdaterer leftSpeed og rightSpeed
+    
+    followLine(); // updates leftSpeed, rightSpeed and state
+    
+    switch (this->state)
+    {
+    case 0: // No line found
+        // testing stuff
+        this->rotateRobot(180);
+        delay(1000);
+        this->rotateRobot(180);
+        break;
+        
+    default:
+        this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
+        break;
+    }
 
     // ca. 1cm per iterasjon, ved speed=400 mm/s
-    this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
     // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5); // nextAction()
 }
 
-void Robot::moveRobot(int steps1, int steps2){
-    this->controller.move(steps1, -steps2);
+void Robot::moveRobot(int stepsLeft, int stepsRight){// stepsLeft is left motor, stepsRight is right motor
+    this->controller.move(stepsLeft, -stepsRight);
 }
 
 void Robot::setSpeed(int _speed){
@@ -76,4 +97,21 @@ float Robot::speed2rpm(int _speed){
     output: RPM
     */
     return (_speed*60)/(3.141592*this->diameterDriveWheels);
+}
+
+void Robot::rotateRobot(float degrees){
+    setLeftSpeed(this->speed/5);
+    setRightSpeed(this->speed/5);
+    float distance = (degrees/360)*this->wheelbase*3.141592;
+
+    this->moveRobotDist(distance, -distance);
+    setLeftSpeed(this->speed);
+    setRightSpeed(this->speed);
+
+}
+
+void Robot::moveRobotDist(float distLeft, float distRight){
+    int stepsLeft = (distLeft/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
+    int stepsRight = (distRight/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
+    this->moveRobot(stepsLeft, stepsRight);
 }
