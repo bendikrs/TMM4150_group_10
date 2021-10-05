@@ -26,10 +26,10 @@ public:
     bool lookForLine(); // False until line is found
     bool followLine(); // Assumes a line is present, and executes one correction iteration to follow the line
     bool autoDrive(); // Drives until line is found, follows line when it's found. tries to grab cup, if found.
-    void moveRobot(int steps1, int steps2);
+    void moveRobot(int steps1, int steps2); // drives the robot, positive is forward, negative is backwards
     void beginRobot(); // init motors and calibrate IRs
-    void setRightSpeed(int _speed);
-    void setLeftSpeed(int _speed);
+    void setRightSpeed(int _speed); // sets the speed for the right stepper
+    void setLeftSpeed(int _speed); // sets the speed for the left stepper
 };
 
 
