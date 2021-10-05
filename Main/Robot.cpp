@@ -26,7 +26,7 @@ bool Robot::followLine(){
     readings ir;
     ir = this->irArray.getReadings();
 
-    if(ir.r2 && ir.r4){
+    if(!ir.r2 && !ir.r4){
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed);
     }
@@ -38,14 +38,13 @@ bool Robot::followLine(){
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
-    
 }
 
 bool Robot::autoDrive(){
     followLine(); // oppdaterer leftSpeed og rightSpeed
 
     // ca. 1cm per iterasjon, ved speed=400 mm/s
-    this->moveRobot(this->leftSpeed/5, -this->rightSpeed/5);
+    this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
     // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5); // nextAction()
 }
 
