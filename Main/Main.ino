@@ -30,7 +30,8 @@ A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
 SyncDriver controller(stepper_left, stepper_right);
 InfraredArray irArray(IR1, IR2, IR3, IR4, IR5);
-Robot robot(stepper_left, stepper_right, irArray, controller);
+Gripper gripper(liftServo, grabServo);
+Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
 
 void setup() {
     Serial.begin(115200);
@@ -38,8 +39,7 @@ void setup() {
 }
 
 void loop() {
-    robot.autoDrive();
-
+    // robot.autoDrive();
     // Serial.println();
     // Serial.print(robot.irArray.getReadings().r0);
     // Serial.print(" ");
@@ -51,5 +51,3 @@ void loop() {
     // Serial.print(" ");
     // Serial.print(robot.irArray.getReadings().r4);  
 }
-
-
