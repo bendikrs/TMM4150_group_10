@@ -13,18 +13,24 @@ InfraredArray::InfraredArray(int infra0, int infra1, int infra2, int infra3, int
 
 }
 
-readings InfraredArray::getReadings(){
+readings InfraredArray::getAnalogReadings(){
     /*Updates and returns a readings struct, with analog values
-    The numbers are in percent, where 100% is a reading larger or equal to this->upperLim
-    and 0% is a reading lower or equal to this->lowerLim
+
     */
 
     readings returnReadings;
-    // returnReadings.r0 = analogRead(this->infra0);
-    // returnReadings.r1 = analogRead(this->infra1);
-    // returnReadings.r2 = analogRead(this->infra2);
-    // returnReadings.r3 = analogRead(this->infra3);
-    // returnReadings.r4 = analogRead(this->infra4);
+    returnReadings.r0 = analogRead(this->infra0);
+    returnReadings.r1 = analogRead(this->infra1);
+    returnReadings.r2 = analogRead(this->infra2);
+    returnReadings.r3 = analogRead(this->infra3);
+    returnReadings.r4 = analogRead(this->infra4);
+    
+    this->irReadings = returnReadings;
+    return returnReadings;
+}
+
+readings InfraredArray::getDigitalReadings(){
+    readings returnReadings;
 
     returnReadings.r0 = digitalRead(this->infra0);
     returnReadings.r1 = digitalRead(this->infra1);
@@ -32,16 +38,45 @@ readings InfraredArray::getReadings(){
     returnReadings.r3 = digitalRead(this->infra3);
     returnReadings.r4 = digitalRead(this->infra4);
 
+    return returnReadings;
+}
 
-    
-    this->irReadings = returnReadings;
+readings InfraredArray::getMappedDigitalReadings(){
+    /*
+    The numbers are in percent, where 100% is a reading larger or equal to this->upperLim
+    and 0% is a reading lower or equal to this->lowerLim
+    */
+    readings returnReadings = getAnalogReadings();
+
+    returnReadings.r0 = map(returnReadings.r0, this->lowerLim[0], this->upperLim[0], 0, 100);
+    returnReadings.r1 = map(returnReadings.r1, this->lowerLim[1], this->upperLim[1], 0, 100);
+    returnReadings.r2 = map(returnReadings.r2, this->lowerLim[2], this->upperLim[2], 0, 100);
+    returnReadings.r3 = map(returnReadings.r3, this->lowerLim[3], this->upperLim[3], 0, 100);
+    returnReadings.r4 = map(returnReadings.r4, this->lowerLim[4], this->upperLim[4], 0, 100);
+
+    return returnReadings;
+}
+
+readings InfraredArray::getMappedBinaryReadings(){
+    /*
+    1: reading over 50%
+    0: reading under 50%
+    */
+    readings returnReadings = getMappedDigitalReadings();
+
+    returnReadings.r0 = returnReadings.r0 > 50 ? 1:0;
+    returnReadings.r1 = returnReadings.r1 > 50 ? 1:0;
+    returnReadings.r2 = returnReadings.r2 > 50 ? 1:0;
+    returnReadings.r3 = returnReadings.r3 > 50 ? 1:0;
+    returnReadings.r4 = returnReadings.r4 > 50 ? 1:0;
+
     return returnReadings;
 }
 
 int InfraredArray::getAverage(){
     /*Updates readings and return average reading over all sensors, in percent
     */
-    readings ir = getReadings();
+    readings ir = getAnalogReadings();
     return (ir.r0+ir.r1+ir.r2+ir.r3+ir.r4)/5;
 }
 
@@ -59,7 +94,7 @@ void InfraredArray::calibrateIRs(){
     */
     readings reading_i;
     for (int i=0; i<1000; i++){  
-        reading_i = this->getReadings();
+        reading_i = this->getAnalogReadings();
         updateUpperLowerLim(reading_i.r0, 0);
         updateUpperLowerLim(reading_i.r1, 1);
         updateUpperLowerLim(reading_i.r2, 2);
@@ -73,17 +108,7 @@ void InfraredArray::calibrateIRs(){
     }
 }
 
-readings InfraredArray::getDigitalReadings(){
-    readings returnReadings = getReadings();
 
-    returnReadings.r0 = map(returnReadings.r0, this->lowerLim[0], this->upperLim[0], 0, 100);
-    returnReadings.r1 = map(returnReadings.r1, this->lowerLim[1], this->upperLim[1], 0, 100);
-    returnReadings.r2 = map(returnReadings.r2, this->lowerLim[2], this->upperLim[2], 0, 100);
-    returnReadings.r3 = map(returnReadings.r3, this->lowerLim[3], this->upperLim[3], 0, 100);
-    returnReadings.r4 = map(returnReadings.r4, this->lowerLim[4], this->upperLim[4], 0, 100);
-
-    return returnReadings;
-}
 
 void InfraredArray::updateUpperLowerLim(int sensorReading, int sensorIndex){
     if (sensorReading < this->lowerLim[sensorIndex]){

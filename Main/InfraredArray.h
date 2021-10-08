@@ -15,18 +15,21 @@ private:
     int infra3;
     int infra4;
      // used to calibrate the ir sensors
-    int upperLim[5] = {512};
-    int lowerLim[5] = {512};
+    int upperLim[5] = {1023};
+    int lowerLim[5] = {1};
     // contains the most recent readings from the sensors
-    readings irReadings;
+    readings irReadings; // measurements from sensors, always in raw analog format (from 1 to 1023)
 public:
     InfraredArray(int infra0, int infra1, int infra2, int infra3, int infra4);
-    readings getReadings(); //Updates private variable "irReadings" and returns a readings struct
-    readings getDigitalReadings(); //fetches the analog reading from sensors and based on the upperLim and LowerLim determines the binary outcome
+    readings getAnalogReadings(); //Updates private variable "irReadings" and returns a readings struct by using analogread()
+    readings getDigitalReadings(); //returns a readings struct by using digitalread()
+    readings getMappedDigitalReadings(); //Updates private variable "irReadings" and based on the upperLim and LowerLim map the signal from 0 to 100%
+    readings getMappedBinaryReadings(); //Updates private variable "irReadings" and  based on the upperLim and LowerLim determines the binary outcome
     int getAverage(); //Updates readings and returns a int with the average reading fromm all sensors
     void setUpperLim(int upperLim, int sensorIndex);
     void setLowerLim(int lowerLim, int sensorIndex);
     void calibrateIRs();
     void updateUpperLowerLim(int sensorReading, int sensorIndex);
+
 
 };

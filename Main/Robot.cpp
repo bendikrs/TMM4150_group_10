@@ -31,7 +31,7 @@ void Robot::followLine(){
     4: Follows line
     */
     readings ir;
-    ir = this->irArray.getReadings();
+    ir = this->irArray.getMappedBinaryReadings();
 
     if(!ir.r2 && !ir.r4){ 
         setLeftSpeed(this->speed);
