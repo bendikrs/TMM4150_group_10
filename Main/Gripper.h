@@ -7,8 +7,8 @@ class Gripper
 private:
     int servoLiftPin;
     int servoGripPin;
-    int gripClosed = 160;
-    int gripOpened = 150;
+    int gripClosed = 160; // Angle configuration in closed posistion
+    int gripOpened = 150; // Angle configuration in open posistion
 public:
     Servo servoLift;
     Servo servoGrip;
