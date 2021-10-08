@@ -76,19 +76,6 @@ void Robot::fancyFollowLine(){
     setLeftSpeed(leftSpeed);
     setRightSpeed(rightSpeed);
 
-    // if (motorspeeda > maxspeeda) {
-    //     motorspeeda = maxspeeda;
-    // }
-    // if (motorspeedb > maxspeedb) {
-    //     motorspeedb = maxspeedb;
-    // }
-    // if (motorspeeda < 0) {
-    //     motorspeeda = 0;
-    // }
-    // if (motorspeedb < 0) {
-    //     motorspeedb = 0;
-    // } 
-
 }
 
 bool Robot::autoDrive(){
