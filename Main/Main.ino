@@ -12,16 +12,16 @@
 #define DIR_R 4
 #define STEP_R 5
 
+// Setting the pins for the servos
+#define LIFTSERVO 10
+#define GRABSERVO 11
+
 // Setting the pins for the IR array
 #define IR1 A0
 #define IR2 A1
 #define IR3 A2
 #define IR4 A3
 #define IR5 A4
-
-// Setting the pins for the servos
-#define grabServo 10
-#define liftServo 11
 
 // using a 200-step motor
 #define MOTOR_STEPS 200
@@ -30,7 +30,7 @@ A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
 SyncDriver controller(stepper_left, stepper_right);
 InfraredArray irArray(IR1, IR2, IR3, IR4, IR5);
-Gripper gripper(liftServo, grabServo);
+Gripper gripper(LIFTSERVO, GRABSERVO);
 Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
 
 void setup() {
@@ -39,6 +39,7 @@ void setup() {
 }
 
 void loop() {
+    robot.gripper.grab();
     // robot.autoDrive();
     // Serial.println();
     // Serial.print(robot.irArray.getReadings().r0);
