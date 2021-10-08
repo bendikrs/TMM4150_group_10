@@ -118,3 +118,21 @@ void InfraredArray::updateUpperLowerLim(int sensorReading, int sensorIndex){
         setUpperLim(sensorReading, sensorIndex);
     }
 }
+
+int InfraredArray::calculatePosition(){
+    readings ir = getMappedDigitalReadings(); //kan kanskje funke like bra me getAnalogReadings()
+    // Use a weighted sum to find the approximated position
+    int position;
+    position = (100-ir.r0)*sensorPositions[0] + (100-ir.r1)*sensorPositions[1] 
+               + (100-ir.r3)*sensorPositions[3] + (100-ir.r4)*sensorPositions[4];
+    
+    position = map(position,-100*64 - 100*32, 100*64 + 100*32, -5000, 5000);
+
+    return position;
+
+}
+/*
+100 80 30 80 100
+30 80 90 80 100,   4480
+100 80 30 80 100
+*/

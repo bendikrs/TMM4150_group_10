@@ -47,6 +47,50 @@ void Robot::followLine(){
     }
 }
 
+void Robot::fancyFollowLine(){
+    /* returns
+    0: No line found
+    1: Detected left turn
+    2: Detected right turn
+    3: Detected intersection, need to choose to turn left or right
+    4: Follows line
+    */
+    readings ir;
+    ir = this->irArray.getMappedDigitalReadings();
+    float Kp = 1;
+    float Ki = 1;
+    float Kd = 1;
+    int error = this->irArray.calculatePosition();
+    int P,I,D;
+    
+    P = error;
+    I = I + error;
+    D = error - this->lastError;
+    this->lastError = error;
+    int diffSpeed = P*Kp + I*Ki + D*Kd;
+
+    float leftSpeed = constrain(this->speed + diffSpeed, 0, this->maxSpeed);
+    float rightSpeed = constrain(this->speed - diffSpeed, 0, this->maxSpeed);
+
+
+    setLeftSpeed(leftSpeed);
+    setRightSpeed(rightSpeed);
+
+    // if (motorspeeda > maxspeeda) {
+    //     motorspeeda = maxspeeda;
+    // }
+    // if (motorspeedb > maxspeedb) {
+    //     motorspeedb = maxspeedb;
+    // }
+    // if (motorspeeda < 0) {
+    //     motorspeeda = 0;
+    // }
+    // if (motorspeedb < 0) {
+    //     motorspeedb = 0;
+    // } 
+
+}
+
 bool Robot::autoDrive(){
     
     followLine(); // updates leftSpeed, rightSpeed and state
@@ -73,25 +117,25 @@ void Robot::moveRobot(int stepsLeft, int stepsRight){// stepsLeft is left motor,
     this->controller.move(stepsLeft, -stepsRight);
 }
 
-void Robot::setSpeed(int _speed){
+void Robot::setSpeed(float _speed){
     this->speed = _speed;
     this->controller.getMotor(0).setRPM(speed2rpm(_speed));
     this->controller.getMotor(1).setRPM(speed2rpm(_speed));
 }
 
-void Robot::setLeftSpeed(int _speed){
+void Robot::setLeftSpeed(float _speed){
     // speed: int [mm/s]
     this->leftSpeed = _speed;
     this->controller.getMotor(0).setRPM(speed2rpm(_speed));
 }
 
-void Robot::setRightSpeed(int _speed){
+void Robot::setRightSpeed(float _speed){
     // speed: int [mm/s]
     this->rightSpeed = _speed;
     this->controller.getMotor(1).setRPM(speed2rpm(_speed));
 }
 
-float Robot::speed2rpm(int _speed){
+float Robot::speed2rpm(float _speed){
     /* 
     speed [mm/s]
     output: RPM
