@@ -75,14 +75,23 @@ void Robot::fancyFollowLine(){
 
     setLeftSpeed(leftSpeed);
     setRightSpeed(rightSpeed);
+    this->state = 0;
 
 }
 
 bool Robot::autoDrive(){
     
     followLine(); // updates leftSpeed, rightSpeed and state
-    
-    switch (this->state)
+    // fancyFollowLine();
+
+    // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5);
+    // for (int i = 0; i<5;i++){
+    //     this->controller.nextAction();
+    // }
+
+    this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
+    /*
+    switch (-1)//this->state)
     {
     case 0: // No line found
         // testing stuff
@@ -95,7 +104,7 @@ bool Robot::autoDrive(){
         this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
         break;
     }
-
+    */
     // ca. 1cm per iterasjon, ved speed=400 mm/s
     // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5); // nextAction()
 }

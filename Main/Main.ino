@@ -35,6 +35,7 @@ Robot robot(stepper_left, stepper_right, irArray, controller);
 void setup() {
     Serial.begin(115200);
     robot.beginRobot();
+    // robot.controller.startMove(10000,-10000);
 }
 
 void loop() {
