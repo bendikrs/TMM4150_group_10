@@ -32,14 +32,15 @@ SyncDriver controller(stepper_left, stepper_right);
 InfraredArray irArray(IR1, IR2, IR3, IR4, IR5);
 Gripper gripper(LIFTSERVO, GRABSERVO);
 Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
-
 void setup() {
-    Serial.begin(115200);
-    robot.beginRobot();
+    // Serial.begin(115200);
+    // robot.beginRobot(); // This has to be in setup()
+    robot.gripper.initServos(); // This has to be in setup()
 }
 
 void loop() {
     robot.gripper.grab();
+    
     // robot.autoDrive();
     // Serial.println();
     // Serial.print(robot.irArray.getReadings().r0);
