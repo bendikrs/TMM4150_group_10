@@ -17,11 +17,11 @@
 #define GRABSERVO 11
 
 // Setting the pins for the IR array
-#define IR1 A0
-#define IR2 A1
-#define IR3 A2
-#define IR4 A3
-#define IR5 A4
+#define IR0 A0
+#define IR1 A1
+#define IR2 A2
+#define IR3 A3
+#define IR4 A4
 
 // using a 200-step motor
 #define MOTOR_STEPS 200
@@ -29,9 +29,10 @@
 A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
 SyncDriver controller(stepper_left, stepper_right);
-InfraredArray irArray(IR1, IR2, IR3, IR4, IR5);
 Gripper gripper(LIFTSERVO, GRABSERVO);
+InfraredArray irArray(IR0, IR1, IR2, IR3, IR4);
 Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
+
 void setup() {
     // Serial.begin(115200);
     // robot.beginRobot(); // This has to be in setup()
@@ -39,9 +40,14 @@ void setup() {
 }
 
 void loop() {
-    robot.gripper.grab();
+    robot.autoDrive();
+    // robot.moveRobotDist(100, 100);
+    // robot.rotateRobot(180);
+    // delay(1000);
+    // robot.moveRobotDist(100, 100);
+    // robot.rotateRobot(180);
+    // delay(1000);
     
-    // robot.autoDrive();
     // Serial.println();
     // Serial.print(robot.irArray.getReadings().r0);
     // Serial.print(" ");
