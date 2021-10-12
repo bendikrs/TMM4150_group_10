@@ -1,149 +1,157 @@
-// #include "Gripper.h"
-// #include "Driver.h"
 #include "Robot.h"
 
-
-Robot::Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, SyncDriver controller):
-stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray), controller(controller)
-{
-    
-    // stepper_right.begin(speed2rpm(this->speed), 1);
-    // stepper_left.begin(speed2rpm(this->speed), 1);
-
-    // stepper_right.enable(); // energize coils
-    // stepper_left.enable();
-
-    // stepper_left.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 500, 500);
-    // stepper_right.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 500, 500);
-
-    //stepper_left.nextAction
-}
-
-int Robot::checkIfWorking(){
-    int avgIR;
-    for (int i=1; i<3000; i++){
-        avgIR = this->irArray.getAverage();
-        
-        
-        delay(2);
-    }
-}
-
-float Robot::speed2rpm(int _speed){
-    /* speed [mm/s]
-    output: RPM
-    */
-    return (_speed*60)/(3.141592*this->diameterDriveWheels);
-}
-
-void Robot::setSpeed(int _speed){
-    this->speed = _speed;
-    this->controller.getMotor(0).setRPM(speed2rpm(_speed));
-    this->controller.getMotor(1).setRPM(speed2rpm(_speed));
-}
-
-/*
-void LineFollow::runLineFollow(){
-  for(int count=0; count<5; count++)
-  {
-    lectura_sensor[count]=map(_IRread(count),sensor_negro[count],sensor_blanco[count],0,127);
-    acu+=lectura_sensor[count];
-  }
-
-  //Serial.println(millis());
-  if (acu > NIVEL_PARA_LINEA)
-  {
-    acu/=5;
-
-    int error = ((lectura_sensor[0]<<6)+(lectura_sensor[1]<<5)-(lectura_sensor[3]<<5)-(lectura_sensor[4]<<6))/acu;
-
-    error = constrain(error,-100,100);
-
-    //Calculamos la correcion de velocidad mediante un filtro PD
-    int vel = (error * KP)/10 + (error-last_error)*KD;
-
-    last_error = error;
-
-    //Corregimos la velocidad de avance con el error de salida del filtro PD
-    int motor_left = constrain((robotSpeed + vel),-100,100);
-    int motor_right =constrain((robotSpeed - vel),-100,100);
-
-    //Movemos el robot
-    //motorsWritePct(motor_left,motor_right);
-    motorsWritePct(motor_left,motor_right);
-
-    //Esperamos un poquito a que el robot reaccione
-    delay(intergrationTime);
-  }
-  else
-  {
-    //Hemos encontrado una linea negra
-    //perpendicular a nuestro camino
-    //paramos el robot
-    motorsStop();
-
-    //y detenemos la ejecuci�n del programa
-    //while(true);
-	reportActionDone();
-	//setMode(MODE_SIMPLE);
-  }
-}  
-*/
-
-bool Robot::followLine(){
-    readings ir;
-    ir = this->irArray.getReadings();
-
-    if (!ir.r0 && !ir.r1){ // viss svart
-        setLeftSpeed(this->speed - this->turnSpeedDiff);
-        setRightSpeed(this->speed);
-    }
-    else if (!ir.r3 && !ir.r4){ //viss svart 
-        setLeftSpeed(this->speed);
-        setRightSpeed(this->speed-this->turnSpeedDiff);
-    }
-    else 
-    {
-        setSpeed(this->speed);
-    }
-    
-}
-
-
-bool Robot::autoDrive(){
-    followLine(); // oppdaterer leftSpeed og rightSpeed
-    // this->controller.startMove(this->leftSpeed/40, -this->rightSpeed/40);
-    // this->controller.nextAction();
-    // ca. 1cm per iterasjon, ved speed=400 mm/s
-    this->controller.move(this->leftSpeed/5, -this->rightSpeed/5);  //rotate(2*1080, -2*1080);
-    // this->controller.
-}
-
-void Robot::moveRobot(int steps1, int steps2){
-    this->controller.move(steps1, -steps2);
-}
+Robot::Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, SyncDriver controller, Gripper gripper):
+stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray), controller(controller), gripper(gripper){}
 
 void Robot::beginRobot(){
     // Inits motors and calibrates IRs
     pinMode(LED_BUILTIN, OUTPUT); //setups builtin led
     this->controller.getMotor(0).begin(speed2rpm(this->speed), 1); //left motor
     this->controller.getMotor(1).begin(speed2rpm(this->speed), 1); //right motor
+    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
+    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
 
-    
-    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
-    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::LINEAR_SPEED, 1000, 1000);
-
-    this->irArray.calibrateIRs();
+    // this->irArray.calibrateIRs();
 }
 
-void Robot::setLeftSpeed(int _speed){
+int Robot::checkIfWorking(){
+    int avgIR;
+    for (int i=1; i<3000; i++){
+        avgIR = this->irArray.getAverage();
+        delay(2);
+    }
+}
+
+void Robot::followLine(){
+    /* returns
+    0: No line found
+    1: Detected left turn
+    2: Detected right turn
+    3: Detected intersection, need to choose to turn left or right
+    4: Follows line
+    */
+    readings ir;
+    // ir = this->irArray.getMappedBinaryReadings();
+    ir = this->irArray.getDigitalReadings();
+
+    setLeftSpeed(this->speed);
+    setRightSpeed(this->speed);
+
+    if (!ir.r1){ // viss svart
+        setLeftSpeed(this->speed - this->turnSpeedDiff);
+        setRightSpeed(this->speed);
+    }
+    else if (!ir.r3){ //viss svart 
+        setLeftSpeed(this->speed);
+        setRightSpeed(this->speed-this->turnSpeedDiff);
+    }
+}
+
+void Robot::fancyFollowLine(){
+    /* returns
+    0: No line found
+    1: Detected left turn
+    2: Detected right turn
+    3: Detected intersection, need to choose to turn left or right
+    4: Follows line
+    */
+    readings ir;
+    ir = this->irArray.getMappedDigitalReadings();
+    float Kp = 1;
+    float Ki = 1;
+    float Kd = 1;
+    int error = this->irArray.calculatePosition();
+    int P,I,D;
+    
+    P = error;
+    I = I + error;
+    D = error - this->lastError;
+    this->lastError = error;
+    int diffSpeed = P*Kp + I*Ki + D*Kd;
+
+    float leftSpeed = constrain(this->speed + diffSpeed, 0, this->maxSpeed);
+    float rightSpeed = constrain(this->speed - diffSpeed, 0, this->maxSpeed);
+
+
+    setLeftSpeed(leftSpeed);
+    setRightSpeed(rightSpeed);
+    this->state = 0;
+
+}
+
+bool Robot::autoDrive(){
+    
+    followLine(); // updates leftSpeed, rightSpeed and state
+    // fancyFollowLine();
+
+    // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5);
+    // for (int i = 0; i<5;i++){
+    //     this->controller.nextAction();
+    // }
+
+    this->moveRobot(this->leftSpeed/10, this->rightSpeed/10);
+    /*
+    switch (-1)//this->state)
+    {
+    case 0: // No line found
+        // testing stuff
+        this->rotateRobot(180);
+        delay(1000);
+        this->rotateRobot(180);
+        break;
+        
+    default:
+        this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
+        break;
+    }
+    */
+    // ca. 1cm per iterasjon, ved speed=400 mm/s
+    // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5); // nextAction()
+}
+
+void Robot::moveRobot(int stepsLeft, int stepsRight){// stepsLeft is left motor, stepsRight is right motor
+    this->controller.move(stepsLeft, -stepsRight);
+}
+
+void Robot::setSpeed(float _speed){
+    this->speed = _speed;
+    this->controller.getMotor(0).setRPM(speed2rpm(_speed));
+    this->controller.getMotor(1).setRPM(speed2rpm(_speed));
+}
+
+void Robot::setLeftSpeed(float _speed){
     // speed: int [mm/s]
     this->leftSpeed = _speed;
     this->controller.getMotor(0).setRPM(speed2rpm(_speed));
 }
 
-void Robot::setRightSpeed(int _speed){
+void Robot::setRightSpeed(float _speed){
     // speed: int [mm/s]
     this->rightSpeed = _speed;
     this->controller.getMotor(1).setRPM(speed2rpm(_speed));
+}
+
+float Robot::speed2rpm(float _speed){
+    /* 
+    speed [mm/s]
+    output: RPM
+    */
+    return (_speed*60)/(3.141592*this->diameterDriveWheels);
+}
+
+void Robot::rotateRobot(float degrees){
+    setLeftSpeed(this->speed/5);
+    setRightSpeed(this->speed/5);
+    float distance = (degrees/360)*this->wheelbase*3.141592;
+
+    this->moveRobotDist(distance, -distance);
+    setLeftSpeed(this->speed);
+    setRightSpeed(this->speed);
+
+}
+
+void Robot::moveRobotDist(float distLeft, float distRight){
+    int stepsLeft = (distLeft/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
+    int stepsRight = (distRight/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
+    this->moveRobot(stepsLeft, stepsRight);
 }
