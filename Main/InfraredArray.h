@@ -32,5 +32,6 @@ public:
     void calibrateIRs();
     void updateUpperLowerLim(int sensorReading, int sensorIndex);
     int calculatePosition(); // return number from -5000 to 5000, which is the position of the line from left to right seen from above
+    void printAnalogReadings();
 
 };

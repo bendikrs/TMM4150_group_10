@@ -47,17 +47,7 @@ void loop() {
     // robot.rotateRobot(180);
     // delay(1000);
     
-
-    // Serial.println();
-    // Serial.print(robot.irArray.getReadings().r0);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r1);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r2);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r3);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r4);  
+    // robot.irArray.printAnalogReadings();
 }
 
 

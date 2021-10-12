@@ -31,17 +31,17 @@ void Robot::followLine(){
     4: Follows line
     */
     readings ir;
-    ir = this->irArray.getMappedBinaryReadings();
+    // ir = this->irArray.getMappedBinaryReadings();
+    ir = this->irArray.getDigitalReadings();
 
-    if(!ir.r2 && !ir.r4){ 
-        setLeftSpeed(this->speed);
-        setRightSpeed(this->speed);
-    }
-    else if (!ir.r2){ // viss svart
+    setLeftSpeed(this->speed);
+    setRightSpeed(this->speed);
+
+    if (!ir.r1){ // viss svart
         setLeftSpeed(this->speed - this->turnSpeedDiff);
         setRightSpeed(this->speed);
     }
-    else if (!ir.r4){ //viss svart 
+    else if (!ir.r3){ //viss svart 
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
@@ -89,7 +89,7 @@ bool Robot::autoDrive(){
     //     this->controller.nextAction();
     // }
 
-    this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
+    this->moveRobot(this->leftSpeed/10, this->rightSpeed/10);
     /*
     switch (-1)//this->state)
     {
