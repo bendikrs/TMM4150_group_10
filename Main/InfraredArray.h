@@ -19,11 +19,11 @@ private:
     int lowerLim[5] = {1};
     int sensorPositions[5] = {-64, -32, 0, 32, 64}; // positions of sensors measured from middle [mm]
     // contains the most recent readings from the sensors
-    readings irReadings; // measurements from sensors, always in raw analog format (from 1 to 1023)
 public:
+    readings irReadings; // measurements from sensors, is either in raw analog format (from 1 to 1023) or digital (1,0) based on last run function
     InfraredArray(int infra0, int infra1, int infra2, int infra3, int infra4);
     readings getAnalogReadings(); //Updates private variable "irReadings" and returns a readings struct by using analogread()
-    readings getDigitalReadings(); //returns a readings struct by using digitalread()
+    readings getDigitalReadings(); //Updates private variable "irReadings" and returns a readings struct by using digitalread()
     readings getMappedDigitalReadings(); //Updates private variable "irReadings" and based on the upperLim and LowerLim map the signal from 0 to 100%
     readings getMappedBinaryReadings(); //Updates private variable "irReadings" and  based on the upperLim and LowerLim determines the binary outcome
     int getAverage(); //Updates readings and returns a int with the average reading fromm all sensors

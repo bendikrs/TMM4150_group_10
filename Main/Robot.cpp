@@ -23,25 +23,14 @@ int Robot::checkIfWorking(){
 }
 
 void Robot::followLine(){
-    /* returns
-    0: No line found
-    1: Detected left turn
-    2: Detected right turn
-    3: Detected intersection, need to choose to turn left or right
-    4: Follows line
-    */
-    readings ir;
-    // ir = this->irArray.getMappedBinaryReadings();
-    ir = this->irArray.getDigitalReadings();
-
     setLeftSpeed(this->speed);
     setRightSpeed(this->speed);
 
-    if (!ir.r1){ // viss svart
+    if (!this->irArray.irReadings.r1){ // viss svart
         setLeftSpeed(this->speed - this->turnSpeedDiff);
         setRightSpeed(this->speed);
     }
-    else if (!ir.r3){ //viss svart 
+    else if (!this->irArray.irReadings.r3){ //viss svart 
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
@@ -75,8 +64,6 @@ void Robot::fancyFollowLine(){
 
     setLeftSpeed(leftSpeed);
     setRightSpeed(rightSpeed);
-    this->state = 0;
-
 }
 
 bool Robot::autoDrive(){
@@ -90,21 +77,37 @@ bool Robot::autoDrive(){
     // }
 
     this->moveRobot(this->leftSpeed/10, this->rightSpeed/10);
-    /*
-    switch (-1)//this->state)
+    determineState(); //sets state
+    switch (state)//this->state)
     {
-    case 0: // No line found
+    case NOLINE: // No line found
         // testing stuff
-        this->rotateRobot(180);
+        rotateRobot(180);
         delay(1000);
-        this->rotateRobot(180);
+        rotateRobot(120);
         break;
-        
+
+    case LEFTTURN:
+        rotateRobot(-90);
+        break;
+
+    case RIGHTTURN:
+        rotateRobot(90);
+        break;  
+
+    case INTERSECTION:
+        rotateRobot(90); // må endres
+        break;
+
+    case FOLLOWLINE:
+        followLine();
+        break;
+
     default:
-        this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
         break;
     }
-    */
+    this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
+    
     // ca. 1cm per iterasjon, ved speed=400 mm/s
     // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5); // nextAction()
 }
@@ -154,4 +157,23 @@ void Robot::moveRobotDist(float distLeft, float distRight){
     int stepsLeft = (distLeft/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
     int stepsRight = (distRight/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
     this->moveRobot(stepsLeft, stepsRight);
+}
+
+void Robot::determineState(){
+    readings ir = this->irArray.getDigitalReadings();
+    if (ir.r1 && ir.r2 && ir.r3){
+        this->state = NOLINE;
+    }
+    else if(!ir.r0){
+        this->state = LEFTTURN;
+    }
+    else if(!ir.r4){
+        this->state = RIGHTTURN;
+    }
+    else if(!ir.r0 && !ir.r4){
+        this->state = INTERSECTION;
+    }
+    else if(!ir.r2){
+        this->state = FOLLOWLINE;
+    }
 }

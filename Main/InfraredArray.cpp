@@ -37,6 +37,7 @@ readings InfraredArray::getDigitalReadings(){
     returnReadings.r3 = digitalRead(this->infra3);
     returnReadings.r4 = digitalRead(this->infra4);
 
+    this->irReadings = returnReadings;
     return returnReadings;
 }
 

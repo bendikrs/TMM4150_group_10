@@ -4,6 +4,7 @@
 #include "Gripper.h"
 #pragma once
 
+enum State{NOLINE, LEFTTURN, RIGHTTURN, INTERSECTION, FOLLOWLINE};
 class Robot
 {
 private:
@@ -17,15 +18,8 @@ private:
     bool hasFoundCup = false;
     float wheelbase = 124; // [mm]
     float lastError = 0;
-    int state = 0;
     int maxSpeed = 400; // [mm/s]
-    /* States:
-    0: No line found
-    1: Detected left turn
-    2: Detected right turn
-    3: Detected intersection, need to choose to turn left or right
-    4: Follows line
-    */
+    enum State state;
 
 public:
     A4988 stepper_left;
@@ -47,4 +41,5 @@ public:
     void setLeftSpeed(float _speed); // sets the speed for the left stepper, takes in [mm/s]
     void rotateRobot(float degrees); // rotates robot, positive is clockwise, negative is counterclockwise
     void moveRobotDist(float distLeft, float distRight); // moves robot a given distance in [mm]
+    void determineState();
 };
