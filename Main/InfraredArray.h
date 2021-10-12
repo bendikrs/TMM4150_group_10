@@ -17,6 +17,7 @@ private:
      // used to calibrate the ir sensors
     int upperLim[5] = {1023};
     int lowerLim[5] = {1};
+    int sensorPositions[5] = {-64, -32, 0, 32, 64}; // positions of sensors measured from middle [mm]
     // contains the most recent readings from the sensors
     readings irReadings; // measurements from sensors, always in raw analog format (from 1 to 1023)
 public:
@@ -30,6 +31,7 @@ public:
     void setLowerLim(int lowerLim, int sensorIndex);
     void calibrateIRs();
     void updateUpperLowerLim(int sensorReading, int sensorIndex);
-
+    int calculatePosition(); // return number from -5000 to 5000, which is the position of the line from left to right seen from above
+    void printAnalogReadings();
 
 };
