@@ -5,13 +5,14 @@ stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray), cont
 
 void Robot::beginRobot(){
     // Inits motors and calibrates IRs
-    pinMode(LED_BUILTIN, OUTPUT); //setups builtin led
+    // pinMode(LED_BUILTIN, OUTPUT); //setups builtin led
+    // this->irArray.calibrateIRs();
+
     this->controller.getMotor(0).begin(speed2rpm(this->speed), 1); //left motor
     this->controller.getMotor(1).begin(speed2rpm(this->speed), 1); //right motor
     this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
     this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
 
-    // this->irArray.calibrateIRs();
 }
 
 int Robot::checkIfWorking(){
@@ -34,6 +35,7 @@ void Robot::followLine(){
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
+    this->moveRobot(this->leftSpeed/10, this->rightSpeed/10);
 }
 
 void Robot::fancyFollowLine(){
@@ -67,49 +69,55 @@ void Robot::fancyFollowLine(){
 }
 
 bool Robot::autoDrive(){
-    
-    followLine(); // updates leftSpeed, rightSpeed and state
-    // fancyFollowLine();
-
-    // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5);
-    // for (int i = 0; i<5;i++){
-    //     this->controller.nextAction();
-    // }
-
-    this->moveRobot(this->leftSpeed/10, this->rightSpeed/10);
     determineState(); //sets state
-    switch (state)//this->state)
+    switch (state)
     {
-    case NOLINE: // No line found
-        // testing stuff
-        rotateRobot(180);
-        delay(1000);
-        rotateRobot(120);
-        break;
+        case NOLINE:
+            /*
+            checkCup
+                if the cup is near, grab and rotate 180
+                else nothing
+            */ 
+            break;
 
-    case LEFTTURN:
-        rotateRobot(-90);
-        break;
+        case LEFTTURN:
+            rotateRobot(-90);
+            break;
 
-    case RIGHTTURN:
-        rotateRobot(90);
-        break;  
+        case RIGHTTURN:
+            rotateRobot(90);
+            break;  
 
-    case INTERSECTION:
-        rotateRobot(90); // må endres
-        break;
+        case INTERSECTION:
+            // TODO
+            break;
 
-    case FOLLOWLINE:
-        followLine();
-        break;
+        case FOLLOWLINE:
+            followLine();
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
-    this->moveRobot(this->leftSpeed/5, this->rightSpeed/5);
-    
-    // ca. 1cm per iterasjon, ved speed=400 mm/s
-    // this->controller.startMove(this->leftSpeed/5, -this->rightSpeed/5); // nextAction()
+}
+
+void Robot::determineState(){
+    readings ir = this->irArray.getDigitalReadings();
+    if(ir.r0 && ir.r4){
+        this->state = INTERSECTION;
+    }
+    else if(ir.r0){
+        this->state = LEFTTURN;
+    }
+    else if(ir.r4){
+        this->state = RIGHTTURN;
+    }
+    else if (!ir.r1 || !ir.r2 || !ir.r3){
+        this->state = FOLLOWLINE;
+    }
+    else if(ir.r1 && ir.r2 && ir.r3){
+        this->state = NOLINE;
+    }
 }
 
 void Robot::moveRobot(int stepsLeft, int stepsRight){// stepsLeft is left motor, stepsRight is right motor
@@ -143,8 +151,8 @@ float Robot::speed2rpm(float _speed){
 }
 
 void Robot::rotateRobot(float degrees){
-    setLeftSpeed(this->speed/5);
-    setRightSpeed(this->speed/5);
+    setLeftSpeed(this->speed);
+    setRightSpeed(this->speed);
     float distance = (degrees/360)*this->wheelbase*3.141592;
 
     this->moveRobotDist(distance, -distance);
@@ -157,23 +165,4 @@ void Robot::moveRobotDist(float distLeft, float distRight){
     int stepsLeft = (distLeft/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
     int stepsRight = (distRight/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
     this->moveRobot(stepsLeft, stepsRight);
-}
-
-void Robot::determineState(){
-    readings ir = this->irArray.getDigitalReadings();
-    if (ir.r1 && ir.r2 && ir.r3){
-        this->state = NOLINE;
-    }
-    else if(!ir.r0){
-        this->state = LEFTTURN;
-    }
-    else if(!ir.r4){
-        this->state = RIGHTTURN;
-    }
-    else if(!ir.r0 && !ir.r4){
-        this->state = INTERSECTION;
-    }
-    else if(!ir.r2){
-        this->state = FOLLOWLINE;
-    }
 }

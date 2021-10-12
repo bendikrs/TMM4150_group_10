@@ -10,7 +10,7 @@ class Robot
 private:
     int stepsPerRotation = 200; // steps
     int diameterDriveWheels = 65; // [mm]
-    float speed = 180; // [mm/s]
+    float speed = 100; // [mm/s]
     float leftSpeed; // [mm/s] positiv verdi er framover
     float rightSpeed; // [mm/s] negativ verdi er framover
     int turnSpeedDiff = speed - 40; // [mm/s]

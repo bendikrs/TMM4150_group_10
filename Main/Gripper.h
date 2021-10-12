@@ -8,9 +8,9 @@ private:
     int servoLiftPin;
     int servoGripPin;
     int gripClosed = 160; // Angle configuration in closed posistion
-    int gripOpened = 100; // Angle configuration in open posistion
-    int liftLower = 85; // Angle configuration in lower posistion
-    int liftUpper = 150; // Angle configuration in upper posisiton
+    int gripOpened = 120; // Angle configuration in open posistion
+    int liftLower = 60; // Angle configuration in lower posistion
+    int liftUpper = 140; // Angle configuration in upper posisiton
     Servo servoLift;
     Servo servoGrip;
 public:

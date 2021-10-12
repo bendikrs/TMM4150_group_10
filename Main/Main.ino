@@ -34,29 +34,12 @@ InfraredArray irArray(IR0, IR1, IR2, IR3, IR4);
 Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
 
 void setup() {
-    // Serial.begin(115200);
+    Serial.begin(115200);
     robot.beginRobot(); // This has to be in setup()
     robot.gripper.initServos(); // This has to be in setup()
 }
 
 void loop() {
     robot.autoDrive();
-    // robot.moveRobotDist(100, 100);
-    // robot.rotateRobot(180);
-    // delay(1000);
-    // robot.moveRobotDist(100, 100);
-    // robot.rotateRobot(180);
-    // delay(1000);
-    
-    // Serial.println();
-    // Serial.print(robot.irArray.getReadings().r0);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r1);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r2);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r3);
-    // Serial.print(" ");
-    // Serial.print(robot.irArray.getReadings().r4);  
 }
 
