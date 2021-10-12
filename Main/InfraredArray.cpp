@@ -10,7 +10,6 @@ InfraredArray::InfraredArray(int infra0, int infra1, int infra2, int infra3, int
     pinMode(infra2, INPUT);
     pinMode(infra3, INPUT);
     pinMode(infra4, INPUT);
-
 }
 
 readings InfraredArray::getAnalogReadings(){

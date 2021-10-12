@@ -1,6 +1,7 @@
 #include "A4988.h"
 #include "InfraredArray.h"
 #include "SyncDriver.h"
+#include "Gripper.h"
 #pragma once
 
 class Robot
@@ -26,13 +27,13 @@ private:
     4: Follows line
     */
 
-
 public:
     A4988 stepper_left;
     A4988 stepper_right;
     InfraredArray irArray;
     SyncDriver controller;
-    Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, SyncDriver controller);
+    Gripper gripper;
+    Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, SyncDriver controller, Gripper gripper);
     int checkIfWorking();
     void setSpeed(float speed); // [mm/s]
     float speed2rpm(float speed);
@@ -47,5 +48,3 @@ public:
     void rotateRobot(float degrees); // rotates robot, positive is clockwise, negative is counterclockwise
     void moveRobotDist(float distLeft, float distRight); // moves robot a given distance in [mm]
 };
-
-

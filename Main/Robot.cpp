@@ -1,7 +1,7 @@
 #include "Robot.h"
 
-Robot::Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, SyncDriver controller):
-stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray), controller(controller){}
+Robot::Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, SyncDriver controller, Gripper gripper):
+stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray), controller(controller), gripper(gripper){}
 
 void Robot::beginRobot(){
     // Inits motors and calibrates IRs
