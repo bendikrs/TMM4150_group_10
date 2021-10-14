@@ -5,12 +5,21 @@
 #pragma once
 
 enum State{NOLINE, LEFTTURN, RIGHTTURN, INTERSECTION, FOLLOWLINE};
+
+struct driveLog
+{
+    int leftSpeed;
+    int rightSpeed;
+    int leftSteps;
+    int rightSteps;
+};
+
 class Robot
 {
 private:
     int stepsPerRotation = 200; // steps
     int diameterDriveWheels = 65; // [mm]
-    float speed = 100; // [mm/s]
+    float speed = 180; // [mm/s]
     float leftSpeed; // [mm/s] positiv verdi er framover
     float rightSpeed; // [mm/s] negativ verdi er framover
     int turnSpeedDiff = speed - 40; // [mm/s]
@@ -20,6 +29,8 @@ private:
     float lastError = 0;
     int maxSpeed = 400; // [mm/s]
     enum State state;
+    driveLog driveLog[100];
+    int driveLogIndex = 0;
 
 public:
     A4988 stepper_left;
@@ -42,4 +53,6 @@ public:
     void rotateRobot(float degrees); // rotates robot, positive is clockwise, negative is counterclockwise
     void moveRobotDist(float distLeft, float distRight); // moves robot a given distance in [mm]
     void determineState();
+    void reverseDrive();
+
 };
