@@ -13,6 +13,7 @@ void Robot::beginRobot(){
     this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
     this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
 
+    this->gripper.initServos();
 }
 
 int Robot::checkIfWorking(){
@@ -74,7 +75,7 @@ bool Robot::autoDrive(){
     {
         case NOLINE:
             /*
-            checkCup
+            checkCup // lage den  her
                 if the cup is near, grab and rotate 180
                 else nothing
             */ 
