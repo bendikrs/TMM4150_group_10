@@ -91,11 +91,13 @@ bool Robot::autoDrive(){
             break;
 
         case LEFTTURN:
+            moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
             rotateRobot(-90);
             break;
 
         case RIGHTTURN:
-            if (this->hasFoundCup){
+            if (!this->hasFoundCup){
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
                 rotateRobot(90);
             }
             else{
@@ -105,9 +107,11 @@ bool Robot::autoDrive(){
 
         case INTERSECTION:
             if (this->hasFoundCup){
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
                 rotateRobot(90);
             }
             else{
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
                 rotateRobot(-90);
             }
             break;

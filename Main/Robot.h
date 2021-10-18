@@ -20,6 +20,7 @@ private:
     float lastError = 0;
     int maxSpeed = 400; // [mm/s]
     enum State state;
+    int distAxelToSensorArray = 65; // used in left and right turns
 
 public:
     A4988 stepper_left;
