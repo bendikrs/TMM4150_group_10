@@ -74,6 +74,15 @@ bool Robot::autoDrive(){
     switch (state)
     {
         case NOLINE:
+            if (this->hasFoundCup){
+                moveRobotDist(random(2,10), random(2,10)); //move a short distance in random direction
+            }
+            else{
+                CupPos position;
+                position = this->gripper.checkForCup();
+                rotateRobot(position.direction);
+                moveRobotDist(position.distance, position.distance);
+            }
             /*
             checkCup // lage den  her
                 if the cup is near, grab and rotate 180
@@ -86,11 +95,21 @@ bool Robot::autoDrive(){
             break;
 
         case RIGHTTURN:
-            rotateRobot(90);
+            if (this->hasFoundCup){
+                rotateRobot(90);
+            }
+            else{
+                moveRobotDist(50, 50); //move past line
+            }
             break;  
 
         case INTERSECTION:
-            // TODO
+            if (this->hasFoundCup){
+                rotateRobot(90);
+            }
+            else{
+                rotateRobot(-90);
+            }
             break;
 
         case FOLLOWLINE:
