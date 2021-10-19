@@ -15,7 +15,7 @@ void Gripper::grab()
         delay(10); 
     }
     delay(1000);
-    for (int i = liftLower; i <= liftUpper; ++i){ // lifts object up
+    for (int i = liftLower; i >= liftUpper; --i){ // lifts object up
         servoLift.write(i);
         delay(10);
     }
@@ -24,7 +24,7 @@ void Gripper::grab()
 
 void Gripper::letGo()
 {
-    for (int i = liftUpper; i >= liftLower; --i){ // placing object down
+    for (int i = liftUpper; i <= liftLower; ++i){ // placing object down
         servoLift.write(i);
         delay(10);
     }
