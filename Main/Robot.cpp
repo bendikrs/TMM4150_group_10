@@ -78,6 +78,7 @@ bool Robot::autoDrive(){
                 if the cup is near, grab and rotate 180
                 else nothing
             */ 
+           moveRobotDist(10,10);
             break;
 
         case LEFTTURN:
@@ -103,13 +104,13 @@ bool Robot::autoDrive(){
 
 void Robot::determineState(){
     readings ir = this->irArray.getDigitalReadings();
-    if(ir.r0 && ir.r4){
+    if(!ir.r0 && !ir.r4){
         this->state = INTERSECTION;
     }
-    else if(ir.r0){
+    else if(!ir.r0){
         this->state = LEFTTURN;
     }
-    else if(ir.r4){
+    else if(!ir.r4){
         this->state = RIGHTTURN;
     }
     else if (!ir.r1 || !ir.r2 || !ir.r3){

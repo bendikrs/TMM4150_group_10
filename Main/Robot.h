@@ -10,13 +10,13 @@ class Robot
 private:
     int stepsPerRotation = 200; // steps
     int diameterDriveWheels = 65; // [mm]
-    float speed = 100; // [mm/s]
+    float speed = 200; // [mm/s]
     float leftSpeed; // [mm/s] positiv verdi er framover
     float rightSpeed; // [mm/s] negativ verdi er framover
-    int turnSpeedDiff = speed - 40; // [mm/s]
+    int turnSpeedDiff = speed - 90; // [mm/s]
     int cycleTime = 50; // [millisecond]
     bool hasFoundCup = false;
-    float wheelbase = 124; // [mm]
+    float wheelbase = 132; // [mm]
     float lastError = 0;
     int maxSpeed = 400; // [mm/s]
     enum State state;
