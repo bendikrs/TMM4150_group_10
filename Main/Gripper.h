@@ -21,6 +21,7 @@ private:
     Servo servoLift;
     Servo servoGrip;
 public:
+    int cupGripped = 20; // Cup is gripped when this close [mm]
     Gripper(int servoLiftPin, int servoGripPin);
     void grab(); // grabs object and lifts it up
     void letGo(); // places object down and loosens gripper

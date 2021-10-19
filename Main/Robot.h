@@ -8,10 +8,10 @@ enum State{NOLINE, LEFTTURN, RIGHTTURN, INTERSECTION, FOLLOWLINE};
 
 struct driveLog
 {
-    int leftSpeed;
-    int rightSpeed;
-    int leftSteps;
-    int rightSteps;
+    unsigned short int leftSpeed;
+    unsigned short int rightSpeed;
+    unsigned short int leftSteps;
+    unsigned short int rightSteps;
 };
 
 class Robot

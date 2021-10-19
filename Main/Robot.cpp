@@ -89,13 +89,12 @@ bool Robot::autoDrive(){
                     rotateRobot(position.direction);
                     moveRobotDist(position.distance, position.distance);
                     this->gripper.grab();
+                    position = this->gripper.checkForCup();
+                    if (position.distance < this->gripper.cupGripped){ // Check if the cup is successfully gripped
+                        reverseDrive(); // Returns home
+                    }
                 }
             }
-            /*
-            checkCup // lage den  her
-                if the cup is near, grab and rotate 180
-                else nothing
-            */ 
            moveRobotDist(10,10);
             break;
 
@@ -201,10 +200,9 @@ void Robot::moveRobotDist(float distLeft, float distRight){
 }
 
 void Robot::reverseDrive(){
-    // rotateRobot(180);
-    for(int i = 0; i <= driveLogIndex; ++i){
+    for (int i = 0; i <= driveLogIndex; ++i){
         setLeftSpeed(this->driveLog[i].leftSpeed);
         setRightSpeed(this->driveLog[i].rightSpeed);
-        this->moveRobot(this->driveLog[i].leftSteps, this->driveLog[i].rightSteps);
+        this->moveRobot(-this->driveLog[i].leftSteps, -this->driveLog[i].rightSteps);
     }
 }
