@@ -40,13 +40,8 @@ void setup() {
 }
 
 void loop() {
-    robot.autoDrive();
-    // robot.moveRobotDist(100, 100);
-    // robot.rotateRobot(180);
-    // delay(1000);
-    // robot.moveRobotDist(100, 100);
-    // robot.rotateRobot(180);
-    // delay(1000);
+    robot.gripper.grab();
+    robot.gripper.letGo();
     
     // Serial.println();
     // Serial.print(robot.irArray.getReadings().r0);
