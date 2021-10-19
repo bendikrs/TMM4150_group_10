@@ -36,7 +36,6 @@ Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
 void setup() {
     Serial.begin(115200);
     robot.beginRobot(); // This has to be in setup()
-    robot.gripper.initServos(); // This has to be in setup()
 }
 
 void loop() {

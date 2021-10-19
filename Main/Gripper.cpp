@@ -39,3 +39,11 @@ void Gripper::initServos(){
     servoLift.attach(servoLiftPin);
     servoGrip.attach(servoGripPin);
 }
+
+CupPos Gripper::checkForCup(){
+    CupPos position;
+    // placeholder values
+    position.direction = 0;
+    position.distance = -1;
+    return position;
+}
