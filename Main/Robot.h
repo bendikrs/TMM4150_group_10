@@ -5,6 +5,15 @@
 #pragma once
 
 enum State{NOLINE, LEFTTURN, RIGHTTURN, INTERSECTION, FOLLOWLINE};
+
+struct driveLog
+{
+    int leftSpeed;
+    int rightSpeed;
+    int leftSteps;
+    int rightSteps;
+};
+
 class Robot
 {
 private:
@@ -20,6 +29,8 @@ private:
     float lastError = 0;
     int maxSpeed = 400; // [mm/s]
     enum State state;
+    driveLog driveLog[100];
+    int driveLogIndex = 0;
     int distAxelToSensorArray = 45; // used in left and right turns
 
 public:
@@ -43,4 +54,6 @@ public:
     void rotateRobot(float degrees); // rotates robot, positive is clockwise, negative is counterclockwise
     void moveRobotDist(float distLeft, float distRight); // moves robot a given distance in [mm]
     void determineState();
+    void reverseDrive();
+
 };

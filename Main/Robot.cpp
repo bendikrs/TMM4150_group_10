@@ -10,8 +10,8 @@ void Robot::beginRobot(){
 
     this->controller.getMotor(0).begin(speed2rpm(this->speed), 1); //left motor
     this->controller.getMotor(1).begin(speed2rpm(this->speed), 1); //right motor
-    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
-    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED, 10, 10);
+    this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED);
+    this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED);
 
     this->gripper.initServos();
 }
@@ -36,6 +36,11 @@ void Robot::followLine(){
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
+    this->driveLog[driveLogIndex].leftSpeed = this->leftSpeed;
+    this->driveLog[driveLogIndex].rightSpeed = this->rightSpeed;
+    this->driveLog[driveLogIndex].leftSteps = this->leftSpeed/10;
+    this->driveLog[driveLogIndex].rightSteps = this->rightSpeed/10;
+    ++driveLogIndex; 
     this->moveRobot(this->leftSpeed/10, this->rightSpeed/10);
 }
 
@@ -193,4 +198,13 @@ void Robot::moveRobotDist(float distLeft, float distRight){
     int stepsLeft = (distLeft/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
     int stepsRight = (distRight/(this->diameterDriveWheels*3.141592)) * this->stepsPerRotation;
     this->moveRobot(stepsLeft, stepsRight);
+}
+
+void Robot::reverseDrive(){
+    // rotateRobot(180);
+    for(int i = 0; i <= driveLogIndex; ++i){
+        setLeftSpeed(this->driveLog[i].leftSpeed);
+        setRightSpeed(this->driveLog[i].rightSpeed);
+        this->moveRobot(this->driveLog[i].leftSteps, this->driveLog[i].rightSteps);
+    }
 }
