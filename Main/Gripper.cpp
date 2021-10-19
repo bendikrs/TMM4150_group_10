@@ -15,7 +15,7 @@ void Gripper::grab()
         delay(10); 
     }
     delay(1000);
-    for (int i = liftLower; i <= liftUpper; ++i){ // lifts object up
+    for (int i = liftLower; i >= liftUpper; --i){ // lifts object up
         servoLift.write(i);
         delay(10);
     }
@@ -24,7 +24,7 @@ void Gripper::grab()
 
 void Gripper::letGo()
 {
-    for (int i = liftUpper; i >= liftLower; --i){ // placing object down
+    for (int i = liftUpper; i <= liftLower; ++i){ // placing object down
         servoLift.write(i);
         delay(10);
     }
@@ -38,4 +38,12 @@ void Gripper::letGo()
 void Gripper::initServos(){
     servoLift.attach(servoLiftPin);
     servoGrip.attach(servoGripPin);
+}
+
+CupPos Gripper::checkForCup(){
+    CupPos position;
+    // placeholder values
+    position.direction = 0;
+    position.distance = -1;
+    return position;
 }
