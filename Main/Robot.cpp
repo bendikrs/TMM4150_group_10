@@ -74,14 +74,17 @@ bool Robot::autoDrive(){
     switch (state)
     {
         case NOLINE:
-            if (this->hasFoundCup){
-                moveRobotDist(random(2,10), random(2,10)); //move a short distance in random direction
-            }
-            else{
+            if (!this->hasFoundCup){
                 CupPos position;
                 position = this->gripper.checkForCup();
-                rotateRobot(position.direction);
-                moveRobotDist(position.distance, position.distance);
+                if (position.distance = -1){
+                    moveRobotDist(5,5);
+                }
+                else{
+                    rotateRobot(position.direction);
+                    moveRobotDist(position.distance, position.distance);
+                    this->gripper.grab();
+                }
             }
             /*
             checkCup // lage den  her
@@ -101,7 +104,7 @@ bool Robot::autoDrive(){
                 rotateRobot(90);
             }
             else{
-                moveRobotDist(50, 50); //move past line
+                moveRobotDist(15, 15); //move past line
             }
             break;  
 
@@ -127,13 +130,13 @@ bool Robot::autoDrive(){
 
 void Robot::determineState(){
     readings ir = this->irArray.getDigitalReadings();
-    if(ir.r0 && ir.r4){
+    if(!ir.r0 && !ir.r4){
         this->state = INTERSECTION;
     }
-    else if(ir.r0){
+    else if(!ir.r0){
         this->state = LEFTTURN;
     }
-    else if(ir.r4){
+    else if(!ir.r4){
         this->state = RIGHTTURN;
     }
     else if (!ir.r1 || !ir.r2 || !ir.r3){

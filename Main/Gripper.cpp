@@ -44,6 +44,6 @@ CupPos Gripper::checkForCup(){
     CupPos position;
     // placeholder values
     position.direction = 0;
-    position.distance = 50;
+    position.distance = -1;
     return position;
 }
