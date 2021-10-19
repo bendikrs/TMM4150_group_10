@@ -13,6 +13,7 @@ void Robot::beginRobot(){
     this->controller.getMotor(0).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED);
     this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED);
 
+    this->gripper.initServos();
 }
 
 int Robot::checkIfWorking(){
@@ -78,24 +79,50 @@ bool Robot::autoDrive(){
     switch (state)
     {
         case NOLINE:
+            if (!this->hasFoundCup){
+                CupPos position;
+                position = this->gripper.checkForCup();
+                if (position.distance = -1){
+                    moveRobotDist(5,5);
+                }
+                else{
+                    rotateRobot(position.direction);
+                    moveRobotDist(position.distance, position.distance);
+                    this->gripper.grab();
+                }
+            }
             /*
-            checkCup
+            checkCup // lage den  her
                 if the cup is near, grab and rotate 180
                 else nothing
-            */
+            */ 
+           moveRobotDist(10,10);
             break;
 
         case LEFTTURN:
-            reverseDrive();
-            // rotateRobot(-90);
+            moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+            rotateRobot(-90);
             break;
 
         case RIGHTTURN:
-            rotateRobot(90);
+            if (!this->hasFoundCup){
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(90);
+            }
+            else{
+                moveRobotDist(15, 15); //move past line
+            }
             break;  
 
         case INTERSECTION:
-            // TODO
+            if (this->hasFoundCup){
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(90);
+            }
+            else{
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(-90);
+            }
             break;
 
         case FOLLOWLINE:
@@ -109,13 +136,13 @@ bool Robot::autoDrive(){
 
 void Robot::determineState(){
     readings ir = this->irArray.getDigitalReadings();
-    if(ir.r0 && ir.r4){
+    if(!ir.r0 && !ir.r4){
         this->state = INTERSECTION;
     }
-    else if(ir.r0){
+    else if(!ir.r0){
         this->state = LEFTTURN;
     }
-    else if(ir.r4){
+    else if(!ir.r4){
         this->state = RIGHTTURN;
     }
     else if (!ir.r1 || !ir.r2 || !ir.r3){
