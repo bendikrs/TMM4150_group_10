@@ -6,9 +6,10 @@ Gripper::Gripper(int servoLiftPin, int servoGripPin)
 
 void Gripper::grab()
 {
-    servoGrip.write(gripOpened);
     servoLift.write(liftLower);
-    delay(5000);
+    delay(500);
+    servoGrip.write(gripOpened);
+    delay(1000);
     for (int i = gripOpened; i <= gripClosed; ++i){ // goes from gripOpened degrees to gripClosed degrees in steps of 1 degree
         servoGrip.write(i); // tell servo to go to position
         delay(10); 
