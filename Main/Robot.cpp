@@ -83,7 +83,7 @@ bool Robot::autoDrive(){
                 CupPos position;
                 position = this->gripper.checkForCup();
                 if (position.distance = -1){
-                    moveRobotDist(5,5);
+                    // moveRobotDist(5,5);
                 }
                 else{
                     rotateRobot(position.direction);
@@ -96,7 +96,7 @@ bool Robot::autoDrive(){
                 if the cup is near, grab and rotate 180
                 else nothing
             */ 
-           moveRobotDist(10,10);
+        //    moveRobotDist(10,10);
             break;
 
         case LEFTTURN:

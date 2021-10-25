@@ -38,6 +38,8 @@ void Gripper::letGo()
 void Gripper::initServos(){
     servoLift.attach(servoLiftPin);
     servoGrip.attach(servoGripPin);
+    servoLift.write(liftLower);
+    servoGrip.write(gripOpened);
 }
 
 CupPos Gripper::checkForCup(){
