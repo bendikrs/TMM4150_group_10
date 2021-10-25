@@ -94,7 +94,7 @@ void LineFollow::calibIRs(){
 	isInited=true;
 }
 
-/*
+
 void LineFollow::runLineFollow(){
   for(int count=0; count<5; count++)
   {
@@ -140,7 +140,7 @@ void LineFollow::runLineFollow(){
 	//setMode(MODE_SIMPLE);
   }
 }
-*/
+
 
 
 void LineFollow::doCalibration(int speedPct, int time){

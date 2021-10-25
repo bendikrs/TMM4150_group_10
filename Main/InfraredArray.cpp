@@ -10,7 +10,6 @@ InfraredArray::InfraredArray(int infra0, int infra1, int infra2, int infra3, int
     pinMode(infra2, INPUT);
     pinMode(infra3, INPUT);
     pinMode(infra4, INPUT);
-
 }
 
 readings InfraredArray::getAnalogReadings(){
@@ -38,6 +37,7 @@ readings InfraredArray::getDigitalReadings(){
     returnReadings.r3 = digitalRead(this->infra3);
     returnReadings.r4 = digitalRead(this->infra4);
 
+    this->irReadings = returnReadings;
     return returnReadings;
 }
 
@@ -117,4 +117,36 @@ void InfraredArray::updateUpperLowerLim(int sensorReading, int sensorIndex){
     if (sensorReading > this->upperLim[sensorIndex]){
         setUpperLim(sensorReading, sensorIndex);
     }
+}
+
+int InfraredArray::calculatePosition(){
+    readings ir = getMappedDigitalReadings(); //kan kanskje funke like bra me getAnalogReadings()
+    // Use a weighted sum to find the approximated position
+    int position;
+    position = (100-ir.r0)*sensorPositions[0] + (100-ir.r1)*sensorPositions[1] 
+               + (100-ir.r3)*sensorPositions[3] + (100-ir.r4)*sensorPositions[4];
+    
+    position = map(position,-100*64 - 100*32, 100*64 + 100*32, -5000, 5000);
+
+    return position;
+
+}
+/*
+100 80 30 80 100
+30 80 90 80 100,   4480
+100 80 30 80 100
+*/
+
+void InfraredArray::printAnalogReadings(){
+    readings returnReadings = getAnalogReadings();
+    Serial.println();
+    Serial.print(returnReadings.r0);
+    Serial.print(" ");
+    Serial.print(returnReadings.r1);
+    Serial.print(" ");
+    Serial.print(returnReadings.r2);
+    Serial.print(" ");
+    Serial.print(returnReadings.r3);
+    Serial.print(" ");
+    Serial.print(returnReadings.r4); 
 }
