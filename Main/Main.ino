@@ -16,6 +16,10 @@
 #define LIFTSERVO 10
 #define GRABSERVO 11
 
+// Setting the pins for the ultrasonic sensor
+#define TRIGPIN 6
+#define ECHOPIN 7
+
 // Setting the pins for the IR array
 #define IR0 A0
 #define IR1 A1
@@ -29,7 +33,7 @@
 A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
 SyncDriver controller(stepper_left, stepper_right);
-Gripper gripper(LIFTSERVO, GRABSERVO);
+Gripper gripper(LIFTSERVO, GRABSERVO, TRIGPIN, ECHOPIN);
 InfraredArray irArray(IR0, IR1, IR2, IR3, IR4);
 Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
 
