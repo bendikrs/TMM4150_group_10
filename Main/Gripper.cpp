@@ -1,6 +1,6 @@
 #include "Gripper.h"
 
-Gripper::Gripper(int servoLiftPin, int servoGripPin, int trigpPin, int echoPin)
+Gripper::Gripper(int servoLiftPin, int servoGripPin, int trigPin, int echoPin)
     : servoLiftPin(servoLiftPin), servoGripPin(servoGripPin), trigPin(trigPin), echoPin(echoPin)
 {
 }
@@ -45,6 +45,11 @@ void Gripper::initServos()
     servoGrip.write(gripOpened);
 }
 
+void Gripper::initUltrasonic(){ //setup for sonar
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+}
+
 CupPos Gripper::checkForCup()
 {
     CupPos position;
@@ -54,12 +59,9 @@ CupPos Gripper::checkForCup()
     return position;
 }
 
-void Gripper::initUltrasonic(){ //setup for sonar
-    pinMode(trigPin, OUTPUT);
-    pinMode(echoPin, INPUT);
-}
-
-int Gripper::calDist(){ //returnerer avstanden
+int Gripper::readDistance(){ //returnerer avstanden
+    long duration;
+    int distance;
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
     // Sets the trigPin on HIGH state for 10 micro seconds
@@ -69,10 +71,10 @@ int Gripper::calDist(){ //returnerer avstanden
     // Reads the echoPin, returns the sound wave travel time in microseconds
     duration = pulseIn(echoPin, HIGH);
     // Calculating the distance
-    distance = duration * 0.034 / 2; // Range : 2cm to 400 cm
-    return distance/10;
+    distance = duration * 0.34 / 2; // Range : 20 mm to 4000 mm
+    return distance;
 }
 
 bool Gripper::checkCup(int a, int b){
-    return (calDist() < a && calDist() > b);
+    return (readDistance() < a && readDistance() > b);
 }
