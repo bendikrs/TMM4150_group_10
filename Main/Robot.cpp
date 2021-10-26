@@ -37,11 +37,11 @@ void Robot::followLine(){
         setLeftSpeed(this->speed);
         setRightSpeed(this->speed-this->turnSpeedDiff);
     }
-    this->driveLog[driveLogIndex].leftSpeed = this->leftSpeed;
-    this->driveLog[driveLogIndex].rightSpeed = this->rightSpeed;
-    this->driveLog[driveLogIndex].leftSteps = this->leftSpeed/10;
-    this->driveLog[driveLogIndex].rightSteps = this->rightSpeed/10;
-    ++driveLogIndex; 
+    // this->driveLog[driveLogIndex].leftSpeed = this->leftSpeed;
+    // this->driveLog[driveLogIndex].rightSpeed = this->rightSpeed;
+    // this->driveLog[driveLogIndex].leftSteps = this->leftSpeed/10;
+    // this->driveLog[driveLogIndex].rightSteps = this->rightSpeed/10;
+    // ++driveLogIndex; 
     this->moveRobot(this->leftSpeed/10, this->rightSpeed/10);
 }
 
@@ -80,24 +80,25 @@ bool Robot::autoDrive(){
     switch (state)
     {
         case NOLINE:
-            if (!this->hasFoundCup){
-                CupPos position;
-                position = this->gripper.checkForCup();
-                if (position.distance = -1){
-                    // moveRobotDist(5,5);
-                }
-                else{
-                    rotateRobot(position.direction);
-                    moveRobotDist(position.distance, position.distance);
-                    this->gripper.grab();
-                }
-            }
+            // if (!this->hasFoundCup){
+            //     moveRobotDist(5,5);
+                // CupPos position;
+                // position = this->gripper.checkForCup();
+                // if (position.distance = -1){
+                //     moveRobotDist(5,5);
+                // }
+                // else{
+                //     rotateRobot(position.direction);
+                //     moveRobotDist(position.distance, position.distance);
+                //     this->gripper.grab();
+                // }
+            // }
             /*
             checkCup // lage den  her
                 if the cup is near, grab and rotate 180
                 else nothing
             */ 
-        //    moveRobotDist(10,10);
+            moveRobotDist(5,5);
             break;
 
         case LEFTTURN:

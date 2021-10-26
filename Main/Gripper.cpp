@@ -10,19 +10,17 @@ void Gripper::grab()
     servoLift.write(liftLower);
     delay(500);
     servoGrip.write(gripOpened);
-    delay(1000);
-    for (int i = gripOpened; i <= gripClosed; ++i)
-    {                       // goes from gripOpened degrees to gripClosed degrees in steps of 1 degree
+    delay(500);
+    for (int i = gripOpened; i <= gripClosed; ++i){ // goes from gripOpened degrees to gripClosed degrees in steps of 1 degree
         servoGrip.write(i); // tell servo to go to position
         delay(10);
     }
-    delay(1000);
-    for (int i = liftLower; i >= liftUpper; --i)
-    { // lifts object up
+    delay(500);
+    for (int i = liftLower; i >= liftUpper; --i){ // lifts object up
         servoLift.write(i);
         delay(10);
     }
-    delay(1000);
+    delay(500);
 }
 
 void Gripper::letGo()
