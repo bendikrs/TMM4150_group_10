@@ -29,7 +29,7 @@ private:
     float lastError = 0;
     int maxSpeed = 400; // [mm/s]
     enum State state;
-    driveLog driveLog[100];
+    driveLog driveLog[1];
     int driveLogIndex = 0;
     int distAxelToSensorArray = 45; // used in left and right turns
 
