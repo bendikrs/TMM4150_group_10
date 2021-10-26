@@ -14,6 +14,7 @@ void Robot::beginRobot(){
     this->controller.getMotor(1).setSpeedProfile(BasicStepperDriver::CONSTANT_SPEED);
 
     this->gripper.initServos();
+    this->gripper.initUltrasonic();
 }
 
 int Robot::checkIfWorking(){
