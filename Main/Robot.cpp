@@ -80,6 +80,9 @@ bool Robot::autoDrive(){
     switch (state)
     {
         case NOLINE:
+            if (this->hasFoundCup){
+                this->celebrate();
+            }
             // if (!this->hasFoundCup){
             //     moveRobotDist(5,5);
                 // CupPos position;
@@ -128,7 +131,23 @@ bool Robot::autoDrive(){
             break;
 
         case FOLLOWLINE:
-            followLine();
+
+            if (this->hasFoundCup){
+                followLine();
+            }
+
+            else if(this->checkCupIteration == 0) {
+                if(this->gripper.checkCup(5, 60)){
+                    this->gripper.grab();
+                    this->rotateRobot(180);
+                    this->moveRobotDist(10,10);
+                    this->hasFoundCup = true;
+                    this->checkCupIteration = 5;
+                }}
+            else{
+                followLine();
+                this->checkCupIteration -= 1;
+            }
             break;
 
         default:
@@ -139,13 +158,26 @@ bool Robot::autoDrive(){
 void Robot::determineState(){
     readings ir = this->irArray.getDigitalReadings();
     if(!ir.r0 && !ir.r4){
+        if (this->intersectionDoubleCheck){
+            this->intersectionDoubleCheck = false;
+        }
+        this->intersectionDoubleCheck = true;
         this->state = INTERSECTION;
     }
     else if(!ir.r0){
+        if (this->leftTurnDoubleCheck){
+            this->leftTurnDoubleCheck = false;
+        }
+        this->leftTurnDoubleCheck = true;
         this->state = LEFTTURN;
     }
     else if(!ir.r4){
+        if (this->rightTurnDoubleCheck){
+            this->rightTurnDoubleCheck = false;
+        }
+        this->rightTurnDoubleCheck = true;
         this->state = RIGHTTURN;
+
     }
     else if (!ir.r1 || !ir.r2 || !ir.r3){
         this->state = FOLLOWLINE;
@@ -209,4 +241,7 @@ void Robot::reverseDrive(){
         setRightSpeed(this->driveLog[i].rightSpeed);
         this->moveRobot(this->driveLog[i].leftSteps, this->driveLog[i].rightSteps);
     }
+}
+
+void Robot::celebrate(){
 }

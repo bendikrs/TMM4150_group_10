@@ -32,6 +32,10 @@ private:
     driveLog driveLog[1];
     int driveLogIndex = 0;
     int distAxelToSensorArray = 45; // used in left and right turns
+    bool rightTurnDoubleCheck = false;
+    bool leftTurnDoubleCheck = false;
+    bool intersectionDoubleCheck = false;
+    uint8_t checkCupIteration = 5;
 
 public:
     A4988 stepper_left;
@@ -55,5 +59,6 @@ public:
     void moveRobotDist(float distLeft, float distRight); // moves robot a given distance in [mm]
     void determineState();
     void reverseDrive();
+    void celebrate();
 
 };
