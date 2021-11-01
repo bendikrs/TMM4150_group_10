@@ -131,6 +131,7 @@ bool Robot::autoDrive(){
                     this->moveRobotDist(5,5);
                     this->hasFoundCup = true;
                     this->lookingForCup = false;
+                    this->reverseDrive(); // For testing 
                 }}
 
             if (this->lookingForCup){
@@ -192,6 +193,8 @@ void Robot::determineState(){
 
 void Robot::moveRobot(int stepsLeft, int stepsRight){// stepsLeft is left motor, stepsRight is right motor
     this->controller.move(stepsLeft, -stepsRight);
+    driveLog.leftSteps += stepsLeft;
+    driveLog.rightSteps -= stepsRight;
 }
 
 void Robot::setSpeed(float _speed){
@@ -242,12 +245,13 @@ void Robot::moveRobotDist(float dist){
 }
 
 void Robot::reverseDrive(){
+    this->moveRobot(-this->driveLog.leftSteps, -this->driveLog.rightSteps);
     // rotateRobot(180);
-    for(int i = 0; i <= driveLogIndex; ++i){
-        setLeftSpeed(this->driveLog[i].leftSpeed);
-        setRightSpeed(this->driveLog[i].rightSpeed);
-        this->moveRobot(this->driveLog[i].leftSteps, this->driveLog[i].rightSteps);
-    }
+    // for(int i = 0; i <= driveLogIndex; ++i){
+    //     setLeftSpeed(this->driveLog[i].leftSpeed);
+    //     setRightSpeed(this->driveLog[i].rightSpeed);
+    //     this->moveRobot(this->driveLog[i].leftSteps, this->driveLog[i].rightSteps);
+    // }
 }
 
 void Robot::celebrate(){

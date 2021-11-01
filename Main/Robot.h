@@ -6,12 +6,10 @@
 
 enum State{NOLINE, LEFTTURN, RIGHTTURN, INTERSECTION, FOLLOWLINE};
 
-struct driveLog
+struct DriveLog
 {
-    int leftSpeed;
-    int rightSpeed;
-    int leftSteps;
-    int rightSteps;
+    long leftSteps = 0;
+    long rightSteps = 0;
 };
 
 class Robot
@@ -31,7 +29,7 @@ private:
     int turnSpeedDiff = speed - 60; // [mm/s]
     
     // Logging variables
-    driveLog driveLog[1];
+    DriveLog driveLog;
     int driveLogIndex = 0;
     
     // States and special cases
