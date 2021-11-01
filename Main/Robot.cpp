@@ -80,41 +80,18 @@ bool Robot::autoDrive(){
     switch (state)
     {
         case NOLINE:
-            // if (!this->hasFoundCup){
-            //     moveRobotDist(5,5);
-                // CupPos position;
-                // position = this->gripper.checkForCup();
-                // if (position.distance = -1){
-                //     moveRobotDist(5,5);
-                // }
-                // else{
-                //     rotateRobot(position.direction);
-                //     moveRobotDist(position.distance, position.distance);
-                //     this->gripper.grab();
-                // }
-            // }
-            /*
-            checkCup // lage den  her
-                if the cup is near, grab and rotate 180
-                else nothing
-            */ 
+            if (this->hasFoundCup){
+                this->gripper.letGo();
+                this->celebrate();
+            } else if (this->lookingForCup){
+                if(this->noLineDoubleCheck){
+                    this->rotateRobot(180);
+                    this->lookingForCup = false;
+                }
+            }
+            this->noLineDoubleCheck = true;
             moveRobotDist(5,5);
             break;
-
-        case LEFTTURN:
-            moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-            rotateRobot(-90);
-            break;
-
-        case RIGHTTURN:
-            if (!this->hasFoundCup){
-                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-                rotateRobot(90);
-            }
-            else{
-                moveRobotDist(15, 15); //move past line
-            }
-            break;  
 
         case INTERSECTION:
             if (this->hasFoundCup){
@@ -127,8 +104,52 @@ bool Robot::autoDrive(){
             }
             break;
 
+        case LEFTTURN:
+            if(leftTurnDoubleCheck){
+                this->leftTurnDoubleCheck = false;
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(-90);
+                this->lookingForCup = true;
+                this->checkCupIteration = 5;
+            }
+            this->leftTurnDoubleCheck = true;
+            break;
+
+        case RIGHTTURN:
+            if(rightTurnDoubleCheck){
+                this->rightTurnDoubleCheck = false;
+                    if (!this->hasFoundCup){
+                        moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                        rotateRobot(90);
+                    }
+                    else{
+                        moveRobotDist(15, 15); //move past line
+                    }
+            }
+            this->rightTurnDoubleCheck = true;
+            break;  
+
+
         case FOLLOWLINE:
-            followLine();
+            if (this->hasFoundCup){
+                followLine();
+            }
+
+            else if(this->checkCupIteration == 0) {
+                this->checkCupIteration = 2;
+                bool sonarRead = this->gripper.checkCup(25, 50);
+                if(sonarRead){
+                    this->gripper.grab();
+                    this->rotateRobot(180);
+                    this->moveRobotDist(5,5);
+                    this->hasFoundCup = true;
+                    this->lookingForCup = false;
+                    this->checkCupIteration = 10000;
+                }}
+            else{
+                this->checkCupIteration -= 1;
+                followLine();
+            }
             break;
 
         default:
@@ -139,13 +160,26 @@ bool Robot::autoDrive(){
 void Robot::determineState(){
     readings ir = this->irArray.getDigitalReadings();
     if(!ir.r0 && !ir.r4){
+        if (this->intersectionDoubleCheck){
+            this->intersectionDoubleCheck = false;
+        }
+        this->intersectionDoubleCheck = true;
         this->state = INTERSECTION;
     }
     else if(!ir.r0){
+        if (this->leftTurnDoubleCheck){
+            this->leftTurnDoubleCheck = false;
+        }
+        this->leftTurnDoubleCheck = true;
         this->state = LEFTTURN;
     }
     else if(!ir.r4){
+        if (this->rightTurnDoubleCheck){
+            this->rightTurnDoubleCheck = false;
+        }
+        this->rightTurnDoubleCheck = true;
         this->state = RIGHTTURN;
+
     }
     else if (!ir.r1 || !ir.r2 || !ir.r3){
         this->state = FOLLOWLINE;
@@ -209,4 +243,7 @@ void Robot::reverseDrive(){
         setRightSpeed(this->driveLog[i].rightSpeed);
         this->moveRobot(this->driveLog[i].leftSteps, this->driveLog[i].rightSteps);
     }
+}
+
+void Robot::celebrate(){
 }
