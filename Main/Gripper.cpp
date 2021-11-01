@@ -76,5 +76,6 @@ int Gripper::readDistance(){ //returnerer avstanden
 }
 
 bool Gripper::checkCup(int a, int b){
-    return (readDistance() < a && readDistance() > b);
+    int dist = readDistance();
+    return (dist > a && dist < b);
 }

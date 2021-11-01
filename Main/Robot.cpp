@@ -81,43 +81,17 @@ bool Robot::autoDrive(){
     {
         case NOLINE:
             if (this->hasFoundCup){
+                this->gripper.letGo();
                 this->celebrate();
+            } else if (this->lookingForCup){
+                if(this->noLineDoubleCheck){
+                    this->rotateRobot(180);
+                    this->lookingForCup = false;
+                }
             }
-            // if (!this->hasFoundCup){
-            //     moveRobotDist(5,5);
-                // CupPos position;
-                // position = this->gripper.checkForCup();
-                // if (position.distance = -1){
-                //     moveRobotDist(5,5);
-                // }
-                // else{
-                //     rotateRobot(position.direction);
-                //     moveRobotDist(position.distance, position.distance);
-                //     this->gripper.grab();
-                // }
-            // }
-            /*
-            checkCup // lage den  her
-                if the cup is near, grab and rotate 180
-                else nothing
-            */ 
+            this->noLineDoubleCheck = true;
             moveRobotDist(5,5);
             break;
-
-        case LEFTTURN:
-            moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-            rotateRobot(-90);
-            break;
-
-        case RIGHTTURN:
-            if (!this->hasFoundCup){
-                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-                rotateRobot(90);
-            }
-            else{
-                moveRobotDist(15, 15); //move past line
-            }
-            break;  
 
         case INTERSECTION:
             if (this->hasFoundCup){
@@ -130,23 +104,51 @@ bool Robot::autoDrive(){
             }
             break;
 
-        case FOLLOWLINE:
+        case LEFTTURN:
+            if(leftTurnDoubleCheck){
+                this->leftTurnDoubleCheck = false;
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(-90);
+                this->lookingForCup = true;
+                this->checkCupIteration = 5;
+            }
+            this->leftTurnDoubleCheck = true;
+            break;
 
+        case RIGHTTURN:
+            if(rightTurnDoubleCheck){
+                this->rightTurnDoubleCheck = false;
+                    if (!this->hasFoundCup){
+                        moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                        rotateRobot(90);
+                    }
+                    else{
+                        moveRobotDist(15, 15); //move past line
+                    }
+            }
+            this->rightTurnDoubleCheck = true;
+            break;  
+
+
+        case FOLLOWLINE:
             if (this->hasFoundCup){
                 followLine();
             }
 
             else if(this->checkCupIteration == 0) {
-                if(this->gripper.checkCup(5, 60)){
+                this->checkCupIteration = 2;
+                bool sonarRead = this->gripper.checkCup(25, 50);
+                if(sonarRead){
                     this->gripper.grab();
                     this->rotateRobot(180);
-                    this->moveRobotDist(10,10);
+                    this->moveRobotDist(5,5);
                     this->hasFoundCup = true;
-                    this->checkCupIteration = 5;
+                    this->lookingForCup = false;
+                    this->checkCupIteration = 10000;
                 }}
             else{
-                followLine();
                 this->checkCupIteration -= 1;
+                followLine();
             }
             break;
 
