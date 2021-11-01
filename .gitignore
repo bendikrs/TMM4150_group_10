@@ -1,6 +1,6 @@
 # diverse
-.vscode
-*.json
+# .vscode/*
+# *.json
 
 # Prerequisites
 *.d
