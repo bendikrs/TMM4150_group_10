@@ -2,8 +2,8 @@
 #include <Arduino.h>
 #pragma once
 
-struct CupPos
-{
+struct CupPos // not currently used
+{   
     int direction; //direction 0 to 360 degrees. 0 degrees is straight ahead
     int distance; // [mm]
 };
@@ -26,8 +26,7 @@ public:
     void grab(); // grabs object and lifts it up
     void letGo(); // places object down and loosens gripper
     void initServos();
-    CupPos checkForCup();// returns direction and distance of where the cup is
-    void initUltrasonic(); //setup     
-    int readDistance(); //returnerer avstanden    
-    bool checkCup(int a, int b); //Se om koppen er innen gitt intervall
+    void initUltrasonic(); // setup     
+    int readDistance(); // returns distance measured by Ultrasonic sensor   
+    bool checkCup(int a, int b); // Checks if Ultrasonic reading is between a [mm] and b [mm]
 };

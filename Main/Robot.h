@@ -17,11 +17,11 @@ struct driveLog
 class Robot
 {
 private:
-    int stepsPerRotation = 200; // steps
+    int stepsPerRotation = 200; // [steps]
     int diameterDriveWheels = 65; // [mm]
     float speed = 150; // [mm/s]
-    float leftSpeed; // [mm/s] positiv verdi er framover
-    float rightSpeed; // [mm/s] negativ verdi er framover
+    float leftSpeed; // [mm/s] positive value is forward
+    float rightSpeed; // [mm/s]  negative value is forward
     int turnSpeedDiff = speed - 60; // [mm/s]
     int cycleTime = 50; // [millisecond]
     bool hasFoundCup = false;

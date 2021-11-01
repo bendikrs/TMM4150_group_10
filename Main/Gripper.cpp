@@ -50,16 +50,8 @@ void Gripper::initUltrasonic(){ //setup for sonar
     pinMode(echoPin, INPUT);
 }
 
-CupPos Gripper::checkForCup()
-{
-    CupPos position;
-    // placeholder values
-    position.direction = 0;
-    position.distance = -1;
-    return position;
-}
 
-int Gripper::readDistance(){ //returnerer avstanden
+int Gripper::readDistance(){ // returns distance measured by Ultrasonic sensor   
     long duration;
     int distance;
     digitalWrite(trigPin, LOW);

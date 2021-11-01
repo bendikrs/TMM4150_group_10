@@ -4,7 +4,7 @@ Robot::Robot(A4988 stepper_left, A4988 stepper_right, InfraredArray irArray, Syn
 stepper_left(stepper_left), stepper_right(stepper_right), irArray(irArray), controller(controller), gripper(gripper){}
 
 void Robot::beginRobot(){
-    // Inits motors and calibrates IRs
+    // Inits motors and gripper
     // pinMode(LED_BUILTIN, OUTPUT); //setups builtin led
     // this->irArray.calibrateIRs();
 
