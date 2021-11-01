@@ -237,6 +237,10 @@ void Robot::moveRobotDist(float distLeft, float distRight){
     this->moveRobot(stepsLeft, stepsRight);
 }
 
+void Robot::moveRobotDist(float dist){
+    this->moveRobotDist(dist, dist);
+}
+
 void Robot::reverseDrive(){
     // rotateRobot(180);
     for(int i = 0; i <= driveLogIndex; ++i){

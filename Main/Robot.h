@@ -63,6 +63,7 @@ public:
     void setLeftSpeed(float _speed); // sets the speed for the left stepper, takes in [mm/s]
     void rotateRobot(float degrees); // rotates robot, positive is clockwise, negative is counterclockwise
     void moveRobotDist(float distLeft, float distRight); // moves robot a given distance in [mm]
+    void moveRobotDist(float dist); // moves robot a given distance in [mm]
     void determineState();
     void reverseDrive();
     void celebrate();
