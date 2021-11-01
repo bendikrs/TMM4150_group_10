@@ -17,27 +17,32 @@ struct driveLog
 class Robot
 {
 private:
+    // Robot constants
     int stepsPerRotation = 200; // [steps]
     int diameterDriveWheels = 65; // [mm]
+    int distAxelToSensorArray = 45; // [mm] used in left and right turns
+    float wheelbase = 132; // [mm]
+    int maxSpeed = 400; // [mm/s]
+    
+    // Speeds
     float speed = 150; // [mm/s]
     float leftSpeed; // [mm/s] positive value is forward
     float rightSpeed; // [mm/s]  negative value is forward
     int turnSpeedDiff = speed - 60; // [mm/s]
-    int cycleTime = 50; // [millisecond]
-    bool hasFoundCup = false;
-    bool lookingForCup = false;
-    float wheelbase = 132; // [mm]
-    float lastError = 0;
-    int maxSpeed = 400; // [mm/s]
-    enum State state;
+    
+    // Logging variables
     driveLog driveLog[1];
     int driveLogIndex = 0;
-    int distAxelToSensorArray = 45; // used in left and right turns
+    
+    // States and special cases
+    enum State state;
+    bool hasFoundCup = false;
+    bool lookingForCup = false;
     bool rightTurnDoubleCheck = false;
     bool leftTurnDoubleCheck = false;
     bool intersectionDoubleCheck = false;
     bool noLineDoubleCheck = false;
-    int checkCupIteration = 10000;
+    int checkCupIteration = 5; // checks for cup each n iterations
 
 public:
     A4988 stepper_left;

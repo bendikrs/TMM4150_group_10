@@ -53,26 +53,26 @@ void Robot::fancyFollowLine(){
     3: Detected intersection, need to choose to turn left or right
     4: Follows line
     */
-    readings ir;
-    ir = this->irArray.getMappedDigitalReadings();
-    float Kp = 1;
-    float Ki = 1;
-    float Kd = 1;
-    int error = this->irArray.calculatePosition();
-    int P,I,D;
+    // readings ir;
+    // ir = this->irArray.getMappedDigitalReadings();
+    // float Kp = 1;
+    // float Ki = 1;
+    // float Kd = 1;
+    // int error = this->irArray.calculatePosition();
+    // int P,I,D;
     
-    P = error;
-    I = I + error;
-    D = error - this->lastError;
-    this->lastError = error;
-    int diffSpeed = P*Kp + I*Ki + D*Kd;
+    // P = error;
+    // I = I + error;
+    // D = error - this->lastError;
+    // this->lastError = error;
+    // int diffSpeed = P*Kp + I*Ki + D*Kd;
 
-    float leftSpeed = constrain(this->speed + diffSpeed, 0, this->maxSpeed);
-    float rightSpeed = constrain(this->speed - diffSpeed, 0, this->maxSpeed);
+    // float leftSpeed = constrain(this->speed + diffSpeed, 0, this->maxSpeed);
+    // float rightSpeed = constrain(this->speed - diffSpeed, 0, this->maxSpeed);
 
 
-    setLeftSpeed(leftSpeed);
-    setRightSpeed(rightSpeed);
+    // setLeftSpeed(leftSpeed);
+    // setRightSpeed(rightSpeed);
 }
 
 bool Robot::autoDrive(){
@@ -83,13 +83,9 @@ bool Robot::autoDrive(){
             if (this->hasFoundCup){
                 this->gripper.letGo();
                 this->celebrate();
-            } else if (this->lookingForCup){
-                if(this->noLineDoubleCheck){
-                    this->rotateRobot(180);
-                    this->lookingForCup = false;
-                }
+            } else {
+                this->rotateRobot(180);
             }
-            this->noLineDoubleCheck = true;
             moveRobotDist(5,5);
             break;
 
@@ -105,50 +101,40 @@ bool Robot::autoDrive(){
             break;
 
         case LEFTTURN:
-            if(leftTurnDoubleCheck){
-                this->leftTurnDoubleCheck = false;
-                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-                rotateRobot(-90);
-                this->lookingForCup = true;
-                this->checkCupIteration = 5;
-            }
-            this->leftTurnDoubleCheck = true;
+            moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+            rotateRobot(-90);
+            this->lookingForCup = true; // Start to look for cup after turning left at the start of the track
             break;
 
         case RIGHTTURN:
-            if(rightTurnDoubleCheck){
-                this->rightTurnDoubleCheck = false;
-                    if (!this->hasFoundCup){
-                        moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-                        rotateRobot(90);
-                    }
-                    else{
-                        moveRobotDist(15, 15); //move past line
-                    }
+            if (!this->hasFoundCup){
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(90);
             }
-            this->rightTurnDoubleCheck = true;
+            else{
+                moveRobotDist(15, 15); //move past line
+            }
             break;  
 
 
         case FOLLOWLINE:
-            if (this->hasFoundCup){
+            if (this->hasFoundCup || this->checkCupIteration != 0){
                 followLine();
-            }
-
-            else if(this->checkCupIteration == 0) {
-                this->checkCupIteration = 2;
+            } else {
+                this->checkCupIteration = 5;
                 bool sonarRead = this->gripper.checkCup(25, 50);
                 if(sonarRead){
+                    this->moveRobotDist(30);
                     this->gripper.grab();
+                    this->moveRobotDist(-50);
                     this->rotateRobot(180);
                     this->moveRobotDist(5,5);
                     this->hasFoundCup = true;
                     this->lookingForCup = false;
-                    this->checkCupIteration = 10000;
                 }}
-            else{
+
+            if (this->lookingForCup){
                 this->checkCupIteration -= 1;
-                followLine();
             }
             break;
 
@@ -162,30 +148,45 @@ void Robot::determineState(){
     if(!ir.r0 && !ir.r4){
         if (this->intersectionDoubleCheck){
             this->intersectionDoubleCheck = false;
+            this->state = INTERSECTION;
         }
         this->intersectionDoubleCheck = true;
-        this->state = INTERSECTION;
+        this->rightTurnDoubleCheck = false;
+        this->leftTurnDoubleCheck = false;
+        this->noLineDoubleCheck = false;
     }
     else if(!ir.r0){
         if (this->leftTurnDoubleCheck){
             this->leftTurnDoubleCheck = false;
+            this->state = LEFTTURN;
         }
+        this->intersectionDoubleCheck = false;
+        this->rightTurnDoubleCheck = false;
         this->leftTurnDoubleCheck = true;
-        this->state = LEFTTURN;
+        this->noLineDoubleCheck = false;
     }
     else if(!ir.r4){
         if (this->rightTurnDoubleCheck){
             this->rightTurnDoubleCheck = false;
+            this->state = RIGHTTURN;
         }
+        this->intersectionDoubleCheck = false;
         this->rightTurnDoubleCheck = true;
-        this->state = RIGHTTURN;
-
+        this->leftTurnDoubleCheck = false;
+        this->noLineDoubleCheck = false;
     }
     else if (!ir.r1 || !ir.r2 || !ir.r3){
         this->state = FOLLOWLINE;
     }
     else if(ir.r1 && ir.r2 && ir.r3){
-        this->state = NOLINE;
+        if (this->noLineDoubleCheck){
+            this->noLineDoubleCheck = false;
+            this->state = NOLINE;
+        }
+        this->intersectionDoubleCheck = false;
+        this->rightTurnDoubleCheck = false;
+        this->leftTurnDoubleCheck = false;
+        this->noLineDoubleCheck = true;
     }
 }
 
@@ -195,8 +196,8 @@ void Robot::moveRobot(int stepsLeft, int stepsRight){// stepsLeft is left motor,
 
 void Robot::setSpeed(float _speed){
     this->speed = _speed;
-    this->controller.getMotor(0).setRPM(speed2rpm(_speed));
-    this->controller.getMotor(1).setRPM(speed2rpm(_speed));
+    this->controller.getMotor(0).setRPM(speed2rpm(_speed)); // left motor
+    this->controller.getMotor(1).setRPM(speed2rpm(_speed)); // right motor
 }
 
 void Robot::setLeftSpeed(float _speed){
