@@ -40,7 +40,7 @@ private:
     bool leftTurnDoubleCheck = false;
     bool intersectionDoubleCheck = false;
     bool noLineDoubleCheck = false;
-    int checkCupIteration = 10; // checks for cup each n iterations
+    int checkCupIteration = 5; // checks for cup each n iterations
 
 public:
     A4988 stepper_left;

@@ -85,10 +85,11 @@ bool Robot::autoDrive(){
                 this->celebrate();
                 delay(100000);
             } else if (this->lookingForCup){
+                this->moveRobotDist(-80);
                 this->rotateRobot(180);
-                this->checkCupIteration = 30;
+                // this->checkCupIteration = 5;
             }
-            moveRobotDist(5,5);
+            // moveRobotDist(5,5);
             break;
 
         case INTERSECTION:
@@ -105,16 +106,22 @@ bool Robot::autoDrive(){
             break;
 
         case LEFTTURN:
-            moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-            rotateRobot(-90);
-            this->moveRobotDist(100);
-            this->lookingForCup = true; // Start to look for cup after turning left at the start of the track
+            if (!this->hasFoundCup){
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(-90);
+                this->moveRobotDist(30);
+                this->lookingForCup = true; // Start to look for cup after turning left at the start of the track
+            }else{ // rotates to the right
+                moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
+                rotateRobot(90);
+            }
+            
             break;
 
         case RIGHTTURN:
             if (!this->hasFoundCup){
                 moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
-                rotateRobot(90);
+                rotateRobot(-90); // always turn to left if not found cup
             }
             else{
                 moveRobotDist(15, 15); //move past line
@@ -125,19 +132,22 @@ bool Robot::autoDrive(){
         case FOLLOWLINE:
             if (this->hasFoundCup || this->checkCupIteration != 0){
                 followLine();
-            } else {
+            } 
+            else 
+            {
                 this->checkCupIteration = 5;
-                bool sonarRead = this->gripper.checkCup(25, 50);
+                bool sonarRead = this->gripper.checkCup(20, 55);
                 if(sonarRead){
                     this->moveRobotDist(30);
                     this->gripper.grab();
-                    this->moveRobotDist(-50);
+                    this->moveRobotDist(-80);
                     this->rotateRobot(180);
                     this->moveRobotDist(5,5);
                     this->hasFoundCup = true;
                     this->lookingForCup = false;
                     // this->reverseDrive(); // For testing 
-                }}
+                }
+            }
 
             if (this->lookingForCup){
                 this->checkCupIteration -= 1;
@@ -184,17 +194,38 @@ void Robot::determineState(){
         //     this->noLineDoubleCheck = false;
         // }
     }
-    else if (!ir.r1 || !ir.r2 || !ir.r3){
+    else if (!ir.r1 || !ir.r2 || !ir.r3){ // one of the three middle sensors senses black
         this->state = FOLLOWLINE;
     }
-    else if(ir.r0 && ir.r1 && ir.r2 && ir.r3 && ir.r4){
-        if (this->noLineDoubleCheck){
+
+    else if(ir.r1 && ir.r2 && ir.r3){ // Senses only white 
+        if (this->noLineDoubleCheck)
+        {
+            int8_t degs = 15;
+            this->rotateRobot(15);
+            for (int i = 0; i<6; i++) // rotates back and forth to check for line
+            {
+                readings irr = this->irArray.getDigitalReadings();
+                if(!irr.r1 || !irr.r2 || !irr.r3)
+                {
+                    this->rotateRobot(-degs);
+                    degs = 0;
+                    this->moveRobotDist(20);
+                    this->state = FOLLOWLINE;
+                    break;
+                }
+                else
+                {
+                    this->state = NOLINE;
+                }
+                this->rotateRobot(-5);
+                degs -= 5;
+            }
+            this->rotateRobot(-degs);
             this->noLineDoubleCheck = false;
-            this->state = NOLINE;
-        }else{
-            this->rotateRobot(-10);
-            this->moveRobotDist(10);
-            // this->rotateRobot(-10);
+        }
+        else
+        {
             this->intersectionDoubleCheck = false;
             this->rightTurnDoubleCheck = false;
             this->leftTurnDoubleCheck = false;
