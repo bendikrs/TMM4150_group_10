@@ -83,8 +83,10 @@ bool Robot::autoDrive(){
             if (this->hasFoundCup){
                 this->gripper.letGo();
                 this->celebrate();
-            } else {
+                delay(100000);
+            } else if (this->lookingForCup){
                 this->rotateRobot(180);
+                this->checkCupIteration = 30;
             }
             moveRobotDist(5,5);
             break;
@@ -93,16 +95,19 @@ bool Robot::autoDrive(){
             if (this->hasFoundCup){
                 moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
                 rotateRobot(90);
+                this->moveRobotDist(50);
             }
             else{
                 moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
                 rotateRobot(-90);
+                this->moveRobotDist(50);
             }
             break;
 
         case LEFTTURN:
             moveRobotDist(distAxelToSensorArray, distAxelToSensorArray);
             rotateRobot(-90);
+            this->moveRobotDist(100);
             this->lookingForCup = true; // Start to look for cup after turning left at the start of the track
             break;
 
@@ -131,7 +136,7 @@ bool Robot::autoDrive(){
                     this->moveRobotDist(5,5);
                     this->hasFoundCup = true;
                     this->lookingForCup = false;
-                    this->reverseDrive(); // For testing 
+                    // this->reverseDrive(); // For testing 
                 }}
 
             if (this->lookingForCup){
@@ -147,47 +152,54 @@ bool Robot::autoDrive(){
 void Robot::determineState(){
     readings ir = this->irArray.getDigitalReadings();
     if(!ir.r0 && !ir.r4){
-        if (this->intersectionDoubleCheck){
-            this->intersectionDoubleCheck = false;
-            this->state = INTERSECTION;
-        }
-        this->intersectionDoubleCheck = true;
-        this->rightTurnDoubleCheck = false;
-        this->leftTurnDoubleCheck = false;
-        this->noLineDoubleCheck = false;
+        this->state = INTERSECTION;
+        // if (this->intersectionDoubleCheck){
+        //     this->intersectionDoubleCheck = false;
+        // }else{
+        //     this->intersectionDoubleCheck = true;
+        //     this->rightTurnDoubleCheck = false;
+        //     this->leftTurnDoubleCheck = false;
+        //     this->noLineDoubleCheck = false;
+        // }
     }
     else if(!ir.r0){
-        if (this->leftTurnDoubleCheck){
-            this->leftTurnDoubleCheck = false;
-            this->state = LEFTTURN;
-        }
-        this->intersectionDoubleCheck = false;
-        this->rightTurnDoubleCheck = false;
-        this->leftTurnDoubleCheck = true;
-        this->noLineDoubleCheck = false;
+        this->state = LEFTTURN;
+        // if (this->leftTurnDoubleCheck){
+        //     this->leftTurnDoubleCheck = false;
+        // }else{
+        //     this->intersectionDoubleCheck = false;
+        //     this->rightTurnDoubleCheck = false;
+        //     this->leftTurnDoubleCheck = true;
+        //     this->noLineDoubleCheck = false;
+        // }
     }
     else if(!ir.r4){
-        if (this->rightTurnDoubleCheck){
-            this->rightTurnDoubleCheck = false;
-            this->state = RIGHTTURN;
-        }
-        this->intersectionDoubleCheck = false;
-        this->rightTurnDoubleCheck = true;
-        this->leftTurnDoubleCheck = false;
-        this->noLineDoubleCheck = false;
+        this->state = RIGHTTURN;
+        // if (this->rightTurnDoubleCheck){
+        //     this->rightTurnDoubleCheck = false;
+        // }else{
+        //     this->intersectionDoubleCheck = false;
+        //     this->rightTurnDoubleCheck = true;
+        //     this->leftTurnDoubleCheck = false;
+        //     this->noLineDoubleCheck = false;
+        // }
     }
     else if (!ir.r1 || !ir.r2 || !ir.r3){
         this->state = FOLLOWLINE;
     }
-    else if(ir.r1 && ir.r2 && ir.r3){
+    else if(ir.r0 && ir.r1 && ir.r2 && ir.r3 && ir.r4){
         if (this->noLineDoubleCheck){
             this->noLineDoubleCheck = false;
             this->state = NOLINE;
+        }else{
+            this->rotateRobot(-10);
+            this->moveRobotDist(10);
+            // this->rotateRobot(-10);
+            this->intersectionDoubleCheck = false;
+            this->rightTurnDoubleCheck = false;
+            this->leftTurnDoubleCheck = false;
+            this->noLineDoubleCheck = true;
         }
-        this->intersectionDoubleCheck = false;
-        this->rightTurnDoubleCheck = false;
-        this->leftTurnDoubleCheck = false;
-        this->noLineDoubleCheck = true;
     }
 }
 
@@ -255,4 +267,7 @@ void Robot::reverseDrive(){
 }
 
 void Robot::celebrate(){
+    while (1){
+        this->gripper.letGo();
+    }
 }

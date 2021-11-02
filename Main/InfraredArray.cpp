@@ -29,16 +29,23 @@ readings InfraredArray::getAnalogReadings(){
 }
 
 readings InfraredArray::getDigitalReadings(){
-    readings returnReadings;
+    readings v; // values 1
+    readings v2; // values 2
+    
+    v.r0 = digitalRead(this->infra0);
+    v.r1 = digitalRead(this->infra1);
+    v.r2 = digitalRead(this->infra2);
+    v.r3 = digitalRead(this->infra3);
+    v.r4 = digitalRead(this->infra4);
 
-    returnReadings.r0 = digitalRead(this->infra0);
-    returnReadings.r1 = digitalRead(this->infra1);
-    returnReadings.r2 = digitalRead(this->infra2);
-    returnReadings.r3 = digitalRead(this->infra3);
-    returnReadings.r4 = digitalRead(this->infra4);
+    v2.r0 = digitalRead(this->infra0)*v.r0;
+    v2.r1 = digitalRead(this->infra1)*v.r1;
+    v2.r2 = digitalRead(this->infra2)*v.r2;
+    v2.r3 = digitalRead(this->infra3)*v.r3;
+    v2.r4 = digitalRead(this->infra4)*v.r4;
 
-    this->irReadings = returnReadings;
-    return returnReadings;
+    this->irReadings = v2;
+    return v2;
 }
 
 readings InfraredArray::getMappedDigitalReadings(){

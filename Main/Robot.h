@@ -19,14 +19,14 @@ private:
     int stepsPerRotation = 200; // [steps]
     int diameterDriveWheels = 65; // [mm]
     int distAxelToSensorArray = 45; // [mm] used in left and right turns
-    float wheelbase = 132; // [mm]
+    float wheelbase = 130; // [mm]
     int maxSpeed = 400; // [mm/s]
     
     // Speeds
-    float speed = 150; // [mm/s]
+    float speed = 100; // [mm/s]
     float leftSpeed; // [mm/s] positive value is forward
     float rightSpeed; // [mm/s]  negative value is forward
-    int turnSpeedDiff = speed - 60; // [mm/s]
+    int turnSpeedDiff = speed - 30; // [mm/s]
     
     // Logging variables
     DriveLog driveLog;
@@ -40,7 +40,7 @@ private:
     bool leftTurnDoubleCheck = false;
     bool intersectionDoubleCheck = false;
     bool noLineDoubleCheck = false;
-    int checkCupIteration = 5; // checks for cup each n iterations
+    int checkCupIteration = 10; // checks for cup each n iterations
 
 public:
     A4988 stepper_left;
