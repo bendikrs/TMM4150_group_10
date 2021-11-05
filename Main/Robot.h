@@ -6,38 +6,41 @@
 
 enum State{NOLINE, LEFTTURN, RIGHTTURN, INTERSECTION, FOLLOWLINE};
 
-struct driveLog
+struct DriveLog
 {
-    int leftSpeed;
-    int rightSpeed;
-    int leftSteps;
-    int rightSteps;
+    long leftSteps = 0;
+    long rightSteps = 0;
 };
 
 class Robot
 {
 private:
+    // Robot constants
     int stepsPerRotation = 200; // [steps]
     int diameterDriveWheels = 65; // [mm]
-    float speed = 150; // [mm/s]
+    int distAxelToSensorArray = 45; // [mm] used in left and right turns
+    float wheelbase = 130; // [mm]
+    int maxSpeed = 400; // [mm/s]
+    
+    // Speeds
+    float speed = 100; // [mm/s]
     float leftSpeed; // [mm/s] positive value is forward
     float rightSpeed; // [mm/s]  negative value is forward
-    int turnSpeedDiff = speed - 60; // [mm/s]
-    int cycleTime = 50; // [millisecond]
+    int turnSpeedDiff = speed - 30; // [mm/s]
+    
+    // Logging variables
+    DriveLog driveLog;
+    int driveLogIndex = 0;
+    
+    // States and special cases
+    enum State state;
     bool hasFoundCup = false;
     bool lookingForCup = false;
-    float wheelbase = 132; // [mm]
-    float lastError = 0;
-    int maxSpeed = 400; // [mm/s]
-    enum State state;
-    driveLog driveLog[1];
-    int driveLogIndex = 0;
-    int distAxelToSensorArray = 45; // used in left and right turns
     bool rightTurnDoubleCheck = false;
     bool leftTurnDoubleCheck = false;
     bool intersectionDoubleCheck = false;
     bool noLineDoubleCheck = false;
-    int checkCupIteration = 10000;
+    int checkCupIteration = 5; // checks for cup each n iterations
 
 public:
     A4988 stepper_left;
@@ -58,6 +61,7 @@ public:
     void setLeftSpeed(float _speed); // sets the speed for the left stepper, takes in [mm/s]
     void rotateRobot(float degrees); // rotates robot, positive is clockwise, negative is counterclockwise
     void moveRobotDist(float distLeft, float distRight); // moves robot a given distance in [mm]
+    void moveRobotDist(float dist); // moves robot a given distance in [mm]
     void determineState();
     void reverseDrive();
     void celebrate();
