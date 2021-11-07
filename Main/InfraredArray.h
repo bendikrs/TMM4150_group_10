@@ -27,11 +27,11 @@ public:
     readings getMappedDigitalReadings(); //Updates private variable "irReadings" and based on the upperLim and LowerLim map the signal from 0 to 100%
     readings getMappedBinaryReadings(); //Updates private variable "irReadings" and  based on the upperLim and LowerLim determines the binary outcome
     int getAverage(); //Updates readings and returns a int with the average reading fromm all sensors
-    void setUpperLim(int upperLim, int sensorIndex);
-    void setLowerLim(int lowerLim, int sensorIndex);
-    void calibrateIRs();
-    void updateUpperLowerLim(int sensorReading, int sensorIndex);
+    void setUpperLim(int upperLim, int sensorIndex); // used to calibrate the ir sensors
+    void setLowerLim(int lowerLim, int sensorIndex); // used to calibrate the ir sensors
+    void calibrateIRs(); // calibrates the ir sensors
+    void updateUpperLowerLim(int sensorReading, int sensorIndex); // used to calibrate the ir sensors
     int calculatePosition(); // return number from -5000 to 5000, which is the position of the line from left to right seen from above
-    void printAnalogReadings();
+    void printAnalogReadings(); // prints the analog readings from the sensors
 
 };

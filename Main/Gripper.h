@@ -25,8 +25,8 @@ public:
     Gripper(int servoLiftPin, int servoGripPin, int trigpPin, int echoPin);
     void grab(); // grabs object and lifts it up
     void letGo(); // places object down and loosens gripper
-    void initServos();
-    void initUltrasonic(); // setup     
+    void initServos(); // initializes servos
+    void initUltrasonic(); // initializes ultrasonic sensor
     int readDistance(); // returns distance measured by Ultrasonic sensor   
     bool checkCup(int a, int b); // Checks if Ultrasonic reading is between a [mm] and b [mm]
 };

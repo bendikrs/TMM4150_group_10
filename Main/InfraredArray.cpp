@@ -29,20 +29,13 @@ readings InfraredArray::getAnalogReadings(){
 }
 
 readings InfraredArray::getDigitalReadings(){
-    readings v; // values 1
-    // readings v2; // values 2
+    readings v;
     
     v.r0 = digitalRead(this->infra0);
     v.r1 = digitalRead(this->infra1);
     v.r2 = digitalRead(this->infra2);
     v.r3 = digitalRead(this->infra3);
     v.r4 = digitalRead(this->infra4);
-
-    // v2.r0 = digitalRead(this->infra0)*v.r0;
-    // v2.r1 = digitalRead(this->infra1)*v.r1;
-    // v2.r2 = digitalRead(this->infra2)*v.r2;
-    // v2.r3 = digitalRead(this->infra3)*v.r3;
-    // v2.r4 = digitalRead(this->infra4)*v.r4;
 
     this->irReadings = v;
     return v;
@@ -71,7 +64,7 @@ readings InfraredArray::getMappedBinaryReadings(){
     */
     readings returnReadings = getMappedDigitalReadings();
 
-    returnReadings.r0 = returnReadings.r0 > 50 ? 1:0;
+    returnReadings.r0 = returnReadings.r0 > 50 ? 1:0; // If over 50% return 1, else return 0
     returnReadings.r1 = returnReadings.r1 > 50 ? 1:0;
     returnReadings.r2 = returnReadings.r2 > 50 ? 1:0;
     returnReadings.r3 = returnReadings.r3 > 50 ? 1:0;
@@ -88,10 +81,12 @@ int InfraredArray::getAverage(){
 }
 
 void InfraredArray::setLowerLim(int lowerLim, int sensorIndex){
+    // Set lower limit for sensor in sensorIndex
     this->lowerLim[sensorIndex] = lowerLim;
 }
 
 void InfraredArray::setUpperLim(int upperLim, int sensorIndex){
+    // Set upper limit for sensor in sensorIndex
     this->upperLim[sensorIndex] = upperLim;
 }
 
@@ -118,6 +113,7 @@ void InfraredArray::calibrateIRs(){
 
 
 void InfraredArray::updateUpperLowerLim(int sensorReading, int sensorIndex){
+    // Updates lowerLim and upperLim for sensor in sensorIndex
     if (sensorReading < this->lowerLim[sensorIndex]){
         setLowerLim(sensorReading, sensorIndex);
     }
@@ -126,8 +122,8 @@ void InfraredArray::updateUpperLowerLim(int sensorReading, int sensorIndex){
     }
 }
 
-int InfraredArray::calculatePosition(){
-    readings ir = getMappedDigitalReadings(); //kan kanskje funke like bra me getAnalogReadings()
+int InfraredArray::calculatePosition(){ // calculate position of black line under the infrared array // not used 
+    readings ir = getMappedDigitalReadings();
     // Use a weighted sum to find the approximated position
     int position;
     position = (100-ir.r0)*sensorPositions[0] + (100-ir.r1)*sensorPositions[1] 
@@ -138,13 +134,9 @@ int InfraredArray::calculatePosition(){
     return position;
 
 }
-/*
-100 80 30 80 100
-30 80 90 80 100,   4480
-100 80 30 80 100
-*/
 
 void InfraredArray::printAnalogReadings(){
+    // Prints analog readings of all sensors to serial monitor for debugging purposes
     readings returnReadings = getAnalogReadings();
     Serial.println();
     Serial.print(returnReadings.r0);
