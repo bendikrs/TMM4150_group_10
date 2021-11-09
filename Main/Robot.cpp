@@ -263,6 +263,7 @@ void Robot::reverseDrive(){ // not used
 
 void Robot::celebrate(){
     while (1){
+        this->rotateRobot(360);
         this->gripper.letGo();
     }
 }
