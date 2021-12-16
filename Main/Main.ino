@@ -29,7 +29,8 @@
 
 // using a 200-step motor
 #define MOTOR_STEPS 200
-
+ 
+// Setting up all the objects
 A4988 stepper_left(MOTOR_STEPS, DIR_L, STEP_L);
 A4988 stepper_right(MOTOR_STEPS, DIR_R, STEP_R);
 SyncDriver controller(stepper_left, stepper_right);
@@ -38,10 +39,10 @@ InfraredArray irArray(IR0, IR1, IR2, IR3, IR4);
 Robot robot(stepper_left, stepper_right, irArray, controller, gripper);
 
 void setup() {
-    Serial.begin(115200);
-    robot.beginRobot(); // This has to be in setup()
+    Serial.begin(115200); // Start serial communication for debugging
+    robot.beginRobot(); // Initialize the robot
 }
 
 void loop() {
-    robot.autoDrive();
+    robot.autoDrive(); // Drive the robot autonomously
 }
